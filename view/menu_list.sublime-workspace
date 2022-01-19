@@ -1,0 +1,209 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"is",
+				"is_string"
+			],
+			[
+				"login",
+				"login_detail"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/view/menu_list.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/resources/views/kategori/create.blade.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/resources/views/kategori/index.blade.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/app/Http/Requests/KategoriFormRequest.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/resources/views/kategori/edit.blade.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/app/Http/Controllers/KategoriController.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/app/Jenis.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/routes/web.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/index.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/login_detail.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/logout.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/function/fungsi_menu.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/index2.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/index_awal.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/smssman1/index.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/smssman1/index2.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/class/c_login.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/smssman1/class/c_login.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/smssman1/function/fungsi_menu.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/config_asli.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/config.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/login_detail_asli.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/index2_asli.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/index_asli.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/smssman1/config.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/class/c_setting.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/class/c_user.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/view/dashboard.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/tamankarya/function/mysql.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/resources/views/welcome.blade.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/app/Http/Controllers/Auth/ForgotPasswordController.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/app/Http/Controllers/Controller.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/public/index.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/artisan",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/config/database.php",
+		"/Applications/XAMPP/xamppfiles/htdocs/wfp/public/web.config"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"seed"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "menu_list.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 246.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
