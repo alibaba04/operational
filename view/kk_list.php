@@ -183,8 +183,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     <table class="table table-bordered table-striped table-hover" >
                         <thead>
                             <tr>
+                                <th style="width: 1%">Approve</th>
                                 <th style="width: 20%">No KK</th>
-                                <!-- <th style="width: 3%">Approve</th> -->
                                 <th style="width: 10%">Date</th>
                                 <th style="width: 10%">Client</th>
                                 <th style="width: 20%">Address</th>
@@ -197,6 +197,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             $rowCounter=1;
                             while ($query_data = $rs->fetchArray()) {
                                 echo "<tr>";
+                                if ($query_data["approve_koperational"]!='-') {
+                                    echo "<td><center><i class='fa fa-fw fa-check'></i></center></td>";
+                                }else{
+                                    echo "<td></td>";
+                                }
+                                
                                 echo "<td><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/kkreview_detail&mode=addNote&noKK=" . md5($query_data["noKK"])."'>
                                 <button type='button' class='btn btn-block btn-info'>".($query_data["noKk"])."</button></a></td>";
                                 echo "<td><button type='button' class='btn btn-block btn-default'>" . tgl_ind($query_data["tanggal"]) . "</button></td>";
