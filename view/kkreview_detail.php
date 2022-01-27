@@ -48,6 +48,7 @@ $datakcolor1 = '';
     //$("#myNoteAcc").modal({backdrop: 'static'});
     var link = window.location.href;
     $('#btnSend').click(function(){
+      $('#txtNote').val($('#txtmNote').val());
       sendnotif('Send');
     });
     $('#btnApprove').click(function(){
@@ -338,6 +339,49 @@ $datakcolor1 = '';
                 </div>
               </li>
               <li>
+                <i class="fa fa-asterisk bg-aqua"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i></span>
+                  <div class="timeline-body">
+                    <?php  
+                    echo chr(12).'  Rangka utama pipa galvanis '.$rangka.'<br>'.$rangkad.chr(12).'  Hollow 1,5 x 3,5 cm tebal 0,7 mm<br>';
+                    ?>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <i class="fa fa-asterisk bg-aqua"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i></span>
+                  <div class="timeline-body"><?php  echo $bahan.$Finishing; ?>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <i class="fa fa-asterisk bg-aqua"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i></span>
+                  <div class="timeline-body"><?php  echo $plafon; ?>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <i class="fa fa-asterisk bg-aqua"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-clock-o"></i></span>
+                  <div class="timeline-body"><?php  echo $aksesoris; ?>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <i class="fa fa-truck bg-aqua"></i>
+                <div class="timeline-item">
+                  <span class="time"><i class="fa fa-money"></i></span>
+                  <div class="timeline-body"><?php  echo 'Biaya Transport : Rp '.number_format($dataSph['ntransport']).' ('.$dataSph['ktransport'].')'; ?>
+                  </div>
+                </div>
+              </li>
+              <li>
                 <i class="fa fa-unsorted bg-aqua"></i>
                 <div class="timeline-item">
                   <span class="time"><i class="fa fa-clock-o"></i></span>
@@ -377,42 +421,6 @@ $datakcolor1 = '';
                   echo '<input type="hidden" name="color1" id="color1" class="form-control" value="'.$datacolor1.'">';
                   echo '<input type="hidden" name="kcolor1" id="kcolor1" class="form-control" value="'.$datakcolor1.'">';
                   ?></table>
-                  </div>
-                </div>
-              </li>
-              
-              <li>
-                <i class="fa fa-asterisk bg-aqua"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i></span>
-                  <div class="timeline-body">
-                    <?php  
-                    echo chr(12).'  Rangka utama pipa galvanis '.$rangka.'<br>'.$rangkad.chr(12).'  Hollow 1,5 x 3,5 cm tebal 0,7 mm<br>';
-                    ?>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <i class="fa fa-asterisk bg-aqua"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i></span>
-                  <div class="timeline-body"><?php  echo $bahan.$Finishing; ?>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <i class="fa fa-asterisk bg-aqua"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i></span>
-                  <div class="timeline-body"><?php  echo $plafon; ?>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <i class="fa fa-asterisk bg-aqua"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i></span>
-                  <div class="timeline-body"><?php  echo $aksesoris; ?>
                   </div>
                 </div>
               </li>
