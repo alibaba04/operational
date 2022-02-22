@@ -2,10 +2,10 @@
 //=======  : Alibaba
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined('validSession') or die('Restricted access');
-$curPage = "view/kkreview_detail";
+$curPage = "view/spkreview_detail";
 
 //Periksa hak user pada modul/menu ini
-$judulMenu = 'Review Kontrak Kerja';
+$judulMenu = 'Review SPK';
 $hakUser = getUserPrivilege($curPage);
 
 if ($hakUser < 10) {
@@ -18,26 +18,21 @@ if ($hakUser < 10) {
 //Periksa apakah merupakan proses headerless (tambah, edit atau hapus) dan apakah hak user cukup
 if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" ) {
 
-    require_once("./class/c_kkreview.php");
-    $tmpkk = new c_kkreview;
+    require_once("./class/c_spk.php");
+    $tmpkk = new c_spk;
 
 //Jika Mode Tambah/Add Note
-    if ($_POST["txtMode"] == "addNote") {
-        $pesan = $tmpkk->addnote($_POST);
+    if ($_POST["txtMode"] == "edit") {
+        $pesan = $tmpkk->edit($_POST);
     }
 
-//Jika Mode Approve
-    if ($_POST["txtMode"] == "approve") {
-      $pesan = $tmpkk->approve($_POST);
-    }
-    
 //Seharusnya semua transaksi Add dan Edit Sukses karena data sudah tervalidasi dengan javascript di form detail.
 //Jika masih ada masalah, berarti ada exception/masalah yang belum teridentifikasi dan harus segera diperbaiki!
     if (strtoupper(substr($pesan, 0, 5)) == "GAGAL") {
         global $mailSupport;
         $pesan.="Warning!!, please text to " . $mailSupport . " for support this error!.";
     }
-    header("Location:index.php?page=view/kk_list&pesan=" . $pesan);
+    header("Location:index.php?page=view/spk_list&pesan=" . $pesan);
     exit;
 }
 $datacolor1 ='';
@@ -58,19 +53,13 @@ $datakcolor1 = '';
   function omodal() {
     $("#myNoteAcc").modal({backdrop: 'static'});
   }
-  function accmodal() {
-    if ($('#color1').val()!='' || $('#datadesain').val()!='') {
-      $("#myAcc").modal({backdrop: 'static'});
-      $('#txtMode').val('approve');
-      $('#btnApprove').click(function(){
-        
-      });
-    }else{
-      alert('Data Belum Lengkap!!');
-    }
+  function accproject() {
+    alert($('#txtnoproject').val());
+    $("#myAcc").modal({backdrop: 'static'});
+    $('#txtMode').val('edit');
   }
 </SCRIPT>
-<form action="index2.php?page=view/kkreview_detail" method="post" name="frmSiswaDetail" onSubmit="return validasiForm(this);" autocomplete="off">
+<form action="index2.php?page=view/spkreview_detail" method="post" name="frmSiswaDetail" onSubmit="return validasiForm(this);" autocomplete="off">
   <?php
 
   if (isset($_GET["noKK"])){
@@ -78,22 +67,30 @@ $datakcolor1 = '';
   }else{
     $noKk = "";
   }
-  $q = "SELECT ROW_NUMBER() OVER(PARTITION BY dkk.model ORDER BY kk.idKk) AS id,kk.*, dkk.*,u.nama,p.name as pn,p.id as idP,k.name as kn,k.id as idK ";
-  $q.= "FROM aki_kk kk right join aki_dkk dkk on kk.noKk=dkk.noKk left join aki_user u on kk.kodeUser=u.kodeUser left join provinsi p on kk.provinsi=p.id LEFT join kota k on kk.kota=k.id ";
+  $q = "SELECT ROW_NUMBER() OVER(PARTITION BY dkk.model ORDER BY kk.idKk) AS id,spk.*,kk.*, dkk.*,u.nama,p.name as pn,p.id as idP,k.name as kn,k.id as idK ";
+  $q.= "FROM aki_spk spk left join aki_kk kk on spk.nokk=kk.noKk right join aki_dkk dkk on kk.noKk=dkk.noKk left join aki_user u on kk.kodeUser=u.kodeUser left join provinsi p on kk.provinsi=p.id LEFT join kota k on kk.kota=k.id ";
   $q.= "WHERE 1=1 and MD5(kk.noKk)='" . $noKk."'";
   $q.= " ORDER BY kk.noKk desc ";
-  $txtnokk='';
+  $txtnospk='';
   $approvekk = '';
   $rsTemp = mysql_query($q, $dbLink2);
-  if ($dataSph = mysql_fetch_array($rsTemp)) {
-    echo "<input type='hidden' name='txtnoKk' id='txtnoKk' value='" . $dataSph["noKk"] . "'>";
-    echo "<input type='hidden' name='txtnoSph' id='txtnoSph' value='" . $dataSph["noSph"] . "'>";
+  if ($dataspk = mysql_fetch_array($rsTemp)) {
+    $kota = '';$kode = '';
+    $kode = substr($dataspk["nospk"],0,4);
+    if (strpos($dataspk["kn"], 'KOTA') !== false){
+      $kota = substr($dataspk["kn"],5,1);
+    }else if(strpos($dataspk["kn"], 'KABUPATEN') !== false){
+      $kota = substr($dataspk["kn"],9,1);
+    }
+    echo "<input type='hidden' name='txtnoproject' id='txtnoproject' value='" . $kota.$kode . "'>";
+    echo "<input type='hidden' name='txtnoKk' id='txtnoKk' value='" . $dataspk["noKk"] . "'>";
+    echo "<input type='hidden' name='txtnoSph' id='txtnoSph' value='" . $dataspk["noSph"] . "'>";
     echo "<input type='hidden' name='txtnoKkEn' id='txtnoKkEn' value='" . $_GET["noKK"] . "'>";
-    $txtnokk=$dataSph["noKk"];
-    $filekubah=$dataSph["filekubah"];
-    $filekaligrafi=$dataSph["filekaligrafi"];
-    $approvekk = $dataSph["approve"];
-    $hargaKubah = $dataSph["harga"];
+    $txtnospk=$dataspk["nospk"];
+    $filekubah=$dataspk["filekubah"];
+    $filekaligrafi=$dataspk["filekaligrafi"];
+    $approvekk = $dataspk["approve"];
+    $hargaKubah = $dataspk["harga"];
   }
   if ($_GET["mode"] == "addNote") {
     echo "<input type='hidden' name='txtMode' id='txtMode' value='addNote'>";
@@ -121,14 +118,14 @@ $datakcolor1 = '';
       </div>
       <div class="col-sm-6 invoice-col">
         <h2 class="page-header" style="margin: 0;">
-          <b><i class="fa fa-globe"></i> <?php  echo $dataSph["noKk"]; ?></b>
-          <small>No SPH: <?php  echo $dataSph["noSph"]; ?></small>
+          <b><i class="fa fa-globe"></i> <?php  echo $dataspk["nospk"]; ?></b>
+          <small>No Kontrak: <?php  echo $dataspk["noKk"]; ?></small>
           <input type="hidden" name="txtNote" id="txtNote" class="form-control" value="" placeholder="Empty" >
         </h2>
-        <h4>Proyek <?php if ( $dataSph["project_pemerintah"]=='1') {
-         echo 'Pemerintah '.$dataSph["nproyek"];
+        <h4>Proyek <?php if ( $dataspk["project_pemerintah"]=='1') {
+         echo 'Pemerintah '.$dataspk["nproyek"];
          }else{
-          echo $dataSph["nproyek"];
+          echo $dataspk["nproyek"];
         }  
         $mproduksi=0;
         $mpemasangan=0;
@@ -185,16 +182,24 @@ $datakcolor1 = '';
           $i++;
         }
         ?></h4>
-        <h5><address><th>Alamat Masjid: </th><br><?php  echo $dataSph["alamat_proyek"]; ?></td><address></h5>
-        <div class="col-lg-4">
-          <button type="button" class="btn btn-block btn-default btn-lg" disabled="">
-            <?php
-            if ($dataSph["project_pemerintah"]=='1') {
+        <h5><address><th>Alamat Masjid: </th><br><?php  echo $dataspk["alamat_proyek"]; ?></td><address></h5>
+          <?php
+            if ($dataspk["noproyek"]!='-') {
+              echo '<div class="col-lg-3"><button type="" class="btn btn-block btn-default btn-lg" disabled="">'.$dataspk["noproyek"].'</button></div>';
+            }
+            if ($dataspk["ket"]!='-') {
+              echo '<div class="col-lg-3"><button type="" class="btn btn-block btn-default btn-lg" disabled="">'.strtoupper($dataspk["ket"]).'</button></div>';
+            }
+          ?>
+        <div class="col-lg-3">
+          <button type="" class="btn btn-block btn-default btn-lg" disabled="">
+          <?php
+            if ($dataspk["project_pemerintah"]=='1') {
               echo "PPN";
             }else{
               echo "Non PPN";
             }
-            ?>
+          ?>
           </button>
         </div>
         <p class="lead"> </p>
@@ -207,21 +212,13 @@ $datakcolor1 = '';
         <ul class="nav nav-tabs">
           <li class="active"><a href="#cust" data-toggle="tab">Customer</a></li>
           <li><a href="#spec" data-toggle="tab">Specification</a></li>
-          <!-- <li><a href="#termin" data-toggle="tab">Termin</a></li> -->
           <div class="col-lg-6 pull-right">
             <?php 
-
             if ($hakUser > 60 ) {
-              if ($dataSph["approve_koperational"] != '-') {
-                echo '<button type="button" class="btn btn-success pull-right" disabled><i class="fa fa-thumbs-up"></i> Approved</button>';
-              }else if($dataSph["approve_koperational"] != '-' && $dataSph["approve_kpenjualan"] == '-'){
-                echo '<button type="button" class="btn btn-success pull-right" id="btnaccKK" disabled><i class="fa fa-thumbs-up"></i> Approved</button>';
-              }else{
-                echo '<button type="button" class="btn btn-success pull-right" id="btnaccKK" onclick="accmodal()"><i class="fa fa-thumbs-up"></i> Approve KK</button>';
+              if ($dataspk["noproyek"] == '-') {
+                echo '<button type="button" class="btn btn-success pull-right" onclick="accproject()"><i class="fa fa-thumbs-up"></i> Add to Project</button>';
               }
             }?>
-            <button type="button" class="btn btn-primary pull-right" id="btnNote" onclick="omodal()" style="margin-right: 5px;"><i class="fa fa-pencil-square-o" ></i> Note
-            </button>
           </div>
         </ul>
         <div class="tab-content">
@@ -232,7 +229,7 @@ $datakcolor1 = '';
                 <div class="timeline-item">
                   <span class="time"><i class="fa fa-clock-o"></i> </span>
                   <h5 class="timeline-header">Nama </h5>
-                  <div class="timeline-body"><?php  echo $dataSph["nama_cust"].' ('.$dataSph["jabatan"].')'; ?>
+                  <div class="timeline-body"><?php  echo $dataspk["nama_cust"].' ('.$dataspk["jabatan"].')'; ?>
                   </div>
                 </div>
               </li>
@@ -241,7 +238,7 @@ $datakcolor1 = '';
                 <div class="timeline-item">
                   <span class="time"><i class="fa fa-clock-o"></i></span>
                   <h5 class="timeline-header">No Identitas </h5>
-                  <div class="timeline-body"><?php  echo $dataSph["no_id"].' ('.$dataSph["jenis_id"].')'; ?>
+                  <div class="timeline-body"><?php  echo $dataspk["no_id"].' ('.$dataspk["jenis_id"].')'; ?>
                   </div>
                 </div>
               </li>
@@ -251,7 +248,7 @@ $datakcolor1 = '';
                   <span class="time"><i class="fa fa-clock-o"></i></span>
                   <h5 class="timeline-header">No HP </h5>
                   <div class="timeline-body">
-                    <?php  echo $dataSph["no_phone"]; ?>
+                    <?php  echo $dataspk["no_phone"]; ?>
                   </div>
                 </div>
               </li>
@@ -261,7 +258,7 @@ $datakcolor1 = '';
                   <span class="time"><i class="fa fa-clock-o"></i></span>
                   <h5 class="timeline-header">Alamat Customer </h5>
                   <div class="timeline-body">
-                    <?php  echo $dataSph["alamat"].' '.$dataSph["kn"].', '.$dataSph["pn"]; ?>
+                    <?php  echo $dataspk["alamat"].' '.$dataspk["kn"].', '.$dataspk["pn"]; ?>
                   </div>
                 </div>
               </li>
@@ -354,66 +351,14 @@ $datakcolor1 = '';
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title">Approve KK </h4>
+              <h4 class="modal-title">Add Project </h4>
             </div>
             <div class="modal-body">
-              <p>No KK <?php echo $txtnokk; ?></p>
+              <p><h3><?php echo $txtnospk; ?></h3></p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-              <button type="Submit" class="btn btn-primary" id="btnApprove">Approve</button>
+              <button type="Submit" class="btn btn-primary" id="btnApprove">Add</button>
             </div>
-          </div>
-        </div>
-      </div>
-  <div class="modal fade" id="myNoteAcc" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="box box-success direct-chat direct-chat-success">
-            <div class="box-header with-border">
-              <h3 class="box-title">Direct Chat</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool " data-dismiss="modal"><i class="fa fa-times"></i></button>
-              </div>
-            </div>
-            <div class="box-body">
-              <div class="direct-chat-messages">
-                <?php
-                $q3= "SELECT * FROM `aki_report` WHERE ket LIKE 'KK Note, nokk=%".$txtnokk."%'";
-                $rsTemp3 = mysql_query($q3, $dbLink2);
-                $txtket = '';
-                while ($dataSph3 = mysql_fetch_array($rsTemp3)) {
-                  $ket = explode("=",$dataSph3["ket"]);
-                  $ket = explode(",",$ket[2]);
-                  $txtket = $dataSph3["ket"];
-                  $date=date_create($dataSph3["datetime"]);
-                  if ($dataSph3["kodeUser"] == $_SESSION["my"]->id) {
-                    echo '<div class="direct-chat-msg right"><div class="direct-chat-info clearfix"><span class="direct-chat-name pull-right">'.$dataSph3["kodeUser"];
-                    echo '</span><span class="direct-chat-timestamp pull-left">'.date_format($date,"H:i d-m-Y").'</span></div>';
-                    echo '<img src="dist/img/'.$_SESSION["my"]->avatar.'" class="direct-chat-img" alt="User Image"><div class="direct-chat-text">'.$ket[0].'</div></div>';
-                  }else{
-                    echo '<div class="direct-chat-msg"><div class="direct-chat-info clearfix"><span class="direct-chat-name pull-left">'.$dataSph3["kodeUser"];
-                    echo '</span><span class="direct-chat-timestamp pull-right">'.date_format($date,"H:i d-m-Y").'</span></div>';
-                    echo '<img src="dist/img/avt5.png" class="direct-chat-img" alt="User Image"><div class="direct-chat-text">'.$ket[0].'</div></div>';
-                  }
-                }
-                date_default_timezone_set("Asia/Jakarta");
-                $tgl = date("Y-m-d H:i:s");
-                $txtket = explode($_SESSION["my"]->privilege."=",$txtket);
-                $q11 = "UPDATE `aki_report` SET `datetime`='".$tgl."',`ket`='".$txtket[0].$_SESSION["my"]->privilege."=0' WHERE ket like '%".$txtnokk."%read by ".$_SESSION["my"]->privilege."=1%'";
-                $result=mysql_query($q11 , $dbLink2);
-                ?>
-              </div>
-            </div>
-            <div class="box-footer">
-              <div class="input-group">
-                <input type="text" name="message" placeholder="Type Message ..." class="form-control" id="txtmNote">
-                <span class="input-group-btn">
-                  <button type="Submit" class="btn btn-success btn-flat" id="btnSend">Send</button>
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

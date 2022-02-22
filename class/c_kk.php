@@ -217,7 +217,7 @@ class c_kk
 			}
 			
 			//report
-			$rsTemp=mysql_query("SELECT s.`nama_cust`,s.`provinsi`,s.`kota`,ds.`model`,ds.`d`,ds.`dt`,ds.`t`,ds.`luas`,ds.`plafon`,ds.`harga`,ds.`harga2`,ds.`harga3`,ds.`jumlah`,ds.`ket`,ds.`transport`,ds.`biaya_plafon`,ds.`bahan` FROM aki_KK s LEFT JOIN aki_dkk ds ON s.`noKk`=ds.`noKk` WHERE s.`noKk` = '".$params["txtnoKk"]."'", $dbLink);
+			$rsTemp=mysql_query("SELECT s.`noproyek`,s.`nama_cust`,s.`provinsi`,s.`kota`,ds.`model`,ds.`d`,ds.`dt`,ds.`t`,ds.`luas`,ds.`plafon`,ds.`harga`,ds.`harga2`,ds.`harga3`,ds.`jumlah`,ds.`ket`,ds.`transport`,ds.`biaya_plafon`,ds.`bahan` FROM aki_KK s LEFT JOIN aki_dkk ds ON s.`noKk`=ds.`noKk` WHERE s.`noKk` = '".$params["txtnoKk"]."'", $dbLink);
 			$temp = mysql_fetch_array($rsTemp);
 			$tempNamecust  = $temp['nama_cust'];
 			$tempP  = $temp['provinsi'];
@@ -236,12 +236,21 @@ class c_kk
 			$tempTrans  = $temp['transport'];
 			$tempBiaya  = $temp['biaya_plafon'];
 			$tempBahan  = $temp['bahan'];
-			$q3 = "UPDATE aki_kk SET `approve`='1',`approve_by`='".$pembuat."',`approve_tgl`='".$tgl."'  WHERE noKk='".$nokk."'";
-				if (!mysql_query( $q3, $dbLink))
-					throw new Exception('Gagal ubah data KK. ');
+			
+			
 			$q3 = "UPDATE aki_kk SET `nama_cust`='".$namacust."',`jenis_id`='".$jenis_id."',`no_id`='".$no_id."',`no_phone`='".$no_phone."',`jabatan`='".$jabatan."',`nmasjid`='".$nmasjid."',`nproyek`='".$nproyek."',`project_pemerintah`='".$project_pemerintah."',`alamat_proyek`='".$alamat_proyek."',`mproduksi`='".$mproduksi."',`mpemasangan`='".$mpemasangan."',`alamat`='".$alamat."',`provinsi`='".$provinsi."',`kota`='".$kota."',`approve`='0',`approve_by`='-',`approve_tgl`='0000-00-00' WHERE noKk='".$nokk."'";
 			if (!mysql_query( $q3, $dbLink))
 						throw new Exception('Gagal ubah data KK. ');
+			$rsTempSPK=mysql_query("SELECT * FROM `aki_spk` WHERE `nokk` = '".$params["txtnoKk"]."'", $dbLink);
+			$tempSPK = mysql_fetch_array($rsTempSPK);
+			$noproyek  = $temp['noproyek'];
+			$ket = 'first';
+			if ($noproyek !='-') {
+				$ket = 'revisi';
+				$q3 = "UPDATE `aki_spk` SET `noproyek`='".$ket."' WHERE noKk='".$nokk."'";
+			if (!mysql_query( $q3, $dbLink))
+						throw new Exception('Gagal ubah data KK. ');
+			}
 
 			$w1 = secureParam($params["txtW1"],$dbLink);
 			$w2 = secureParam($params["txtW2"], $dbLink);
@@ -430,6 +439,7 @@ class c_kk
 			$tempJumlah  = $temp['jumlah'];
 			$tempKet  = $temp['ket'];
 			$tempBahan  = $temp['bahan'];
+			$nosph  = $temp['noSph'];
 
 			date_default_timezone_set("Asia/Jakarta");
 			$tgl = date("Y-m-d h:i:sa");
@@ -458,6 +468,12 @@ class c_kk
 
 			$q4 = "DELETE FROM aki_kkcolor ";
 			$q4.= "WHERE (noKk)='".$noKk."';";
+
+			if (!mysql_query( $q4, $dbLink))
+				throw new Exception('Gagal hapus data KK.');
+
+			$q4 = "UPDATE `aki_sph` SET `keterangan_kk`=''";
+			$q4.= "WHERE (noSph)='".$nosph."';";
 
 			if (!mysql_query( $q4, $dbLink))
 				throw new Exception('Gagal hapus data KK.');

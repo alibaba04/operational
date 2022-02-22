@@ -63,13 +63,13 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 <!-- End of Script Tanggal -->
 <section class="content-header">
     <h1>
-        SPK
-        <small>List SPK</small>
+        Proyek
+        <small>Proyek Qoobah</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="index.php"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Input</li>
-        <li class="active">SPK</li>
+        <li class="active">Proyek</li>
     </ol>
 </section>
 
@@ -83,7 +83,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             <div class="box box-primary">
                 <div class="box-header">
                     <i class="ion ion-clipboard"></i>
-                    <h3 class="box-title">Search SPK </h3>
+                    <h3 class="box-title">Search Proyek </h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
@@ -102,16 +102,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             </span>
                         </div>
                     </form>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <?php
-                    if ($hakUser==90 or $hakUser==80){
-                        ?>
-                        <a href="<?php echo $_SERVER['PHP_SELF']."?page=html/spk_detail&mode=add";?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add SPK</button></a>
-                        <?php
-                    }
-                    ?>
                 </div>
             </div>
             <!-- /.box -->
