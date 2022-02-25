@@ -232,7 +232,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                         echo "<li><a style='cursor:pointer;' onclick=location.href=location.href='pdf/pdf_SPK.php?&noSPK=" . md5($query_data["noSPK"]) . "'><i class='fa fa-fw fa-money'></i>SPK Approve</a></li>";
                                         echo "</ul></div></td>";
                                 }
-                                echo "<td><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/SPKreview_detail&mode=addNote&noKK=" . md5($query_data["nokk"])."'>
+                                echo "<td><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/spkreview_detail&mode=addNote&noKK=" . md5($query_data["nokk"])."'>
                                 <button type='button' class='btn btn-block btn-info'>".($query_data["noproyek"])."</button></a></td>";
                                 echo "<td>" . ($query_data["nospk"]) . "</td>";
                                 echo "<td>" . ($query_data["nokk"]) . "</td>";
