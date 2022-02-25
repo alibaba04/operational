@@ -54,7 +54,6 @@ $datakcolor1 = '';
     $("#myNoteAcc").modal({backdrop: 'static'});
   }
   function accproject() {
-    alert($('#txtnoproject').val());
     $("#myAcc").modal({backdrop: 'static'});
     $('#txtMode').val('edit');
   }
