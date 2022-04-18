@@ -104,15 +104,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     </form>
                 </div>
                 <!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <?php
-                    if ($hakUser==90 or $hakUser==80){
-                        ?>
-                        <a href="<?php echo $_SERVER['PHP_SELF']."?page=html/kk_detail&mode=add";?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add KK</button></a>
-                        <?php
-                    }
-                    ?>
-                </div>
             </div>
             <!-- /.box -->
         </section>

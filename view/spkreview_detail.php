@@ -85,6 +85,7 @@ $datakcolor1 = '';
     echo "<input type='hidden' name='txtnoKk' id='txtnoKk' value='" . $dataspk["noKk"] . "'>";
     echo "<input type='hidden' name='txtnoSph' id='txtnoSph' value='" . $dataspk["noSph"] . "'>";
     echo "<input type='hidden' name='txtnoKkEn' id='txtnoKkEn' value='" . $_GET["noKK"] . "'>";
+    echo "<input type='hidden' name='txtnoSpk' id='txtnoSpk' value='" . $dataspk["nospk"] . "'>";
     $txtnospk=$dataspk["nospk"];
     $filekubah=$dataspk["filekubah"];
     $filekaligrafi=$dataspk["filekaligrafi"];

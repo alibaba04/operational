@@ -170,6 +170,19 @@ case "checkNamaSetting":
     }
     break;
 
+case "ambilnoproyek":
+    $result = mysql_query("SELECT * FROM `aki_proyek` WHERE 1", $dbLink);
+    if (mysql_num_rows($result)>0) {
+        $idx = 0;
+        while ( $data = mysql_fetch_assoc($result)) {
+
+            $output[$idx] = array("no"=>$data['noproyek']);
+            $idx++;
+        } 
+        echo json_encode($output);
+        break;
+    }
+break;
 case "ambilKota":
     $result = mysql_query("SELECT * FROM `kota` WHERE 1", $dbLink);
     if (mysql_num_rows($result)>0) {

@@ -24,6 +24,7 @@ class c_spk
 	function edit(&$params) 
 	{
 		global $dbLink2;
+		global $dbLink;
 		require_once './function/fungsi_formatdate.php';
 		require_once( './config2.php' );
 		$q='';
@@ -35,21 +36,28 @@ class c_spk
 		}
 		$tglTransaksi = date("Y-m-d");
 		$nokk = secureParam($params["txtnoKk"],$dbLink2);
+		$nospk = secureParam($params["txtnoSpk"],$dbLink2);
 		$noproject = secureParam($params["txtnoproject"],$dbLink2);
         $pembuat = $_SESSION["my"]->id;
 		try
 		{
 			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink2);
 			$result = @mysql_query('BEGIN', $dbLink2);
+			date_default_timezone_set("Asia/Jakarta");
+			$tgl = date("Y-m-d H:i:s");
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
 			$q3 = "UPDATE aki_spk SET `noproyek`='".$noproject."'  WHERE nokk='".$nokk."'";
 				if (!mysql_query( $q3, $dbLink2))
 					throw new Exception($q3.'Gagal Add Project1. ');
+			
+			$q5 = "INSERT INTO `aki_proyek`(`noproyek`, `noSpk`, `noKK`, `tanggal`, `kodeUser`) VALUES";
+			$q5.= "('".$noproject."','".$nospk."','".$nokk."','".$tgl."','".$pembuat."');";
+			if (!mysql_query( $q5, $dbLink))
+						throw new Exception($q5.'Gagal Add Project2. ');
 
-			date_default_timezone_set("Asia/Jakarta");
-			$tgl = date("Y-m-d H:i:s");
+			
 			$ket = "`nomer`=".$params["txtnoKk"]."  -has Add to Project, datetime: ".$tgl;
 			$q4 = "INSERT INTO `aki_report`( `kodeUser`, `datetime`, `ket`) VALUES";
 			$q4.= "('".$pembuat."','".$tgl."','".$ket."');";
