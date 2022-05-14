@@ -14,10 +14,10 @@ $passSalt = 'UFqPNrZENKSQc5yc';
 
 //Default database link
 error_reporting(E_ALL ^ E_DEPRECATED);
-$dbLink2 = mysql_connect($dbHost,$dbUser,$dbPass, true)or die('Could not connect: ' . mysql_error());
+$dbLink3 = mysql_connect($dbHost,$dbUser,$dbPass, true)or die('Could not connect: ' . mysql_error());
 mysql_query("SET NAMES 'UTF8'");
 
-if(!mysql_select_db($dbName,$dbLink2))
+if(!mysql_select_db($dbName,$dbLink3))
 {
 	die('Database Connection Failed!');
 }

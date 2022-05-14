@@ -29,7 +29,7 @@ $mailFrom = 'aki';
 $mailSupport = 'albaihaqial@gmail.com';
 
 /*********** Display Settings ***********/
-$siteTitle = 'Marketing AKI';
+$siteTitle = 'Operational AKI';
 $recordPerPage = 10;
 
 $wajibIsiKeterangan ='<font style="color:#FF0000; font-weight:bold">Field Bertanda * Wajib Diisi</font>';

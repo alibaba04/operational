@@ -49,8 +49,8 @@ class c_spk
 				throw new Exception('Could not begin transaction');
 			}
 			$q3 = "UPDATE aki_spk SET `noproyek`='".$noproject."'  WHERE nokk='".$nokk."'";
-				if (!mysql_query( $q3, $dbLink2))
-					throw new Exception($q3.'Gagal Add Project1. ');
+			if (!mysql_query( $q3, $dbLink2))
+				throw new Exception($q3.'Gagal Add Project1. ');
 			
 			$q5 = "INSERT INTO `aki_proyek`(`noproyek`, `noSpk`, `noKK`, `tanggal`, `kodeUser`) VALUES";
 			$q5.= "('".$noproject."','".$nospk."','".$nokk."','".$tgl."','".$pembuat."');";
@@ -206,6 +206,70 @@ class c_spk
 
 			if (!mysql_query( $q5, $dbLink2))
 				throw new Exception('Gagal hapus data KK.');
+
+			@mysql_query("COMMIT", $dbLink2);
+			$this->strResults="Sukses Hapus Data KK ";
+		}
+		catch(Exception $e) 
+		{
+			  $this->strResults="Gagal Hapus Data KK - ".$e->getMessage().'<br/>';
+			  $result = @mysql_query('ROLLBACK', $dbLink2);
+			  $result = @mysql_query('SET AUTOCOMMIT=1', $dbLink2);
+			  return $this->strResults;
+		}
+		return $this->strResults;
+		
+	}
+
+	function update(&$params)
+	{
+		global $dbLink;
+		require_once './function/fungsi_formatdate.php';
+		//Jika input tidak valid, langsung kembalikan pesan error ke user ($this->strResults)
+		$tglTransaksi = date("Y-m-d");
+		$rangka_in = secureParam($params["rangka_in"],$dbLink);
+		$rangka_out = secureParam($params["rangka_out"],$dbLink);
+		$hollow_in = secureParam($params["hollow_in"],$dbLink);
+		$hollow_out = secureParam($params["hollow_out"],$dbLink);
+		$hl_plafon = secureParam($params["hollow_plafon"],$dbLink);
+		$mal_in = secureParam($params["mal_in"],$dbLink);
+		$mal_out = secureParam($params["mal_out"],$dbLink);
+		$gambarp_in = secureParam($params["gambarp_in"],$dbLink);
+		$gambarp_out = secureParam($params["gambarp_out"],$dbLink);
+		$bahan_in = secureParam($params["bahan_in"],$dbLink);
+		$bahan_out = secureParam($params["bahan_out"],$dbLink);
+		$cat_in = secureParam($params["cat_in"],$dbLink);
+		$cat_out = secureParam($params["cat_out"],$dbLink);
+		$catmakara = secureParam($params["catmakara"],$dbLink);
+		$makara_in = secureParam($params["makara_in"],$dbLink);
+		$makara_out = secureParam($params["makara_out"],$dbLink);
+		$noproject = secureParam($params["txtnoproyek"],$dbLink);
+		$rangka_ga = secureParam($params["rangka_ga"],$dbLink);
+		$packing_in = secureParam($params["packing_in"],$dbLink);
+		$packing_out = secureParam($params["packing_out"],$dbLink);
+		$pk_makara = secureParam($params["pk_makara"],$dbLink);
+		$ekspedisi_in = secureParam($params["ekspedisi_in"],$dbLink);
+		$ekspedisi_out = secureParam($params["ekspedisi_out"],$dbLink);
+		$pemasangan_in = secureParam($params["pemasangan_in"],$dbLink);
+		$pemasangan_out = secureParam($params["pemasangan_out"],$dbLink);
+
+		$nospk = secureParam($params["txtnospk"],$dbLink);
+		$noproject = secureParam($params["txtnoproyek"],$dbLink);
+        $pembuat = $_SESSION["my"]->id;
+		try
+		{
+			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink);
+			$result = @mysql_query('BEGIN', $dbLink);
+			date_default_timezone_set("Asia/Jakarta");
+			$tgl = date("Y-m-d H:i:s");
+			if (!$result) {
+				throw new Exception('Could not begin transaction');
+			}
+
+			$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."'`cat_in`='".$bahan_out."',`cat_out`='".$bahan_out."',`catmakara`='".$bahan_out."',`makara_in`='".$bahan_out."',`makara_out`='".$bahan_out."',`rangka_ga`=[value-22],`packing_in`=[value-23],`packing_out`=[value-24],`pk_makara`=[value-25],`ekspedisi_in`=[value-26],`ekspedisi_out`=[value-27],`pemasangan_in`=[value-28],`pemasangan_out`=[value-29],";
+			$q3.= " WHERE noproyek='".$noproject."'";
+			if (!mysql_query( $q3, $dbLink))
+				throw new Exception($q4.'Gagal Add Project2. ');
 
 			@mysql_query("COMMIT", $dbLink2);
 			$this->strResults="Sukses Hapus Data KK ";

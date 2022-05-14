@@ -16,15 +16,15 @@ if ($hakUser != 90) {
 }
 //Periksa apakah merupakan proses headerless (tambah, edit atau hapus) dan apakah hak user cukup
 if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
-    require_once("./class/c_proyek.php");
-    $tmpproyek = new c_proyek;
+    require_once("./class/c_spk.php");
+    $tmpproyek = new c_spk;
 //Jika Mode Tambah/Add
     if ($_POST["txtMode"] == "Add") {
         $pesan = $tmpproyek->add($_POST);
     }
 //Jika Mode Ubah/Edit
     if ($_POST["txtMode"] == "Edit") {
-        $pesan = $tmpproyek->edit($_POST);
+        $pesan = $tmpproyek->update($_POST);
     }
 //Jika Mode Upload
     if ($_POST["txtMode"] == "Upload") {
@@ -50,10 +50,11 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 <script src="plugins/iCheck/icheck.min.js"></script>
 <script src="js/angka.js"></script>
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function () { 
-        $(".tgl").datepicker({ format: 'dd-mm-yyyy', autoclose:true }); 
-        $("#txttgldeadline").datepicker({ format: 'dd-mm-yyyy', autoclose:true });
-        $("#txttglinternal").datepicker({ format: 'dd-mm-yyyy', autoclose:true });
+    $(document).ready(function () {
+        //$(".select2").select2(); 
+        $(".tgl").datepicker({ format: 'yyyy-mm-dd', autoclose:true }); 
+        $("#txttgldeadline").datepicker({ format: 'yyyy-mm-dd', autoclose:true });
+        $("#txttglinternal").datepicker({ format: 'yyyy-mm-dd', autoclose:true });
     });
 </script>
 <!-- Include script untuk function auto complete -->
@@ -158,132 +159,46 @@ return true;
                 <div class="box box-primary collapsed-box">
                     <div class="box-header">
                         <i class="ion ion-clipboard"></i>
-                        <h3 class="box-title">Detail</h3>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="box-body">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="control-label" for="txtjpekerjaan">Jenis Pekerjaan</label>
-                                <input name="txtjpekerjaan" id="txtjpekerjaan" class="form-control" 
-                                value="<?php echo $dataspk['status_proyek']; ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <div class="col-lg-6" id="dt">
-                                    <label class="control-label" for="txtDt">Diameter Tengah</label><div class="input-group">
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txtDt" id="txtDt" class="form-control" value="0" ><span class="input-group-addon">meter</span></div>
-                                    <label class="control-label" for="txtD">Diameter</label><div class="input-group">
-                                    <input type="text" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))"  name="txtD" id="txtD" class="form-control" placeholder="0"value="0" onfocus="this.value=''"><span class="input-group-addon">meter</span></div>
-                                    <label class="control-label" for="txtT">Tinggi</label><div class="input-group">
-                                    <input type="text" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))"  name="txtT" id="txtT" class="form-control" placeholder="0"value="0" onfocus="this.value=''"><span class="input-group-addon">meter</span></div>
-                                </div>
-                                <div class="col-lg-6" id="dt">
-                                   <label class="control-label" for="idluas">Luas</label><div class="input-group"><input onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))"  type="text" name="idluas" id="idluas" class="form-control" placeholder="0" value=""><span class="input-group-addon">m<sup>2</sup></span></div>
-                                    <label class="control-label" for="txtqty">Jumlah</label>
-                                    <input type="number" min='1' name="txtqty" id="txtqty" class="form-control" value="1" value="">
-                                    <br><br><br>
-                                </div>
-                                <label class="control-label" for="cbomodel">Bahan</label>
-                                <select name="cbomodel" id="cbomodel" class="form-control">
-                                    <option value=setbola>Setengah Bola</option>
-                                    <option value=pinang>Pinang</option>
-                                    <option value=madinah>Madinah</option>
-                                    <option value=bawang>Bawang</option>
-                                    <option value=custom>Custom</option>
-                                </select>
-                                <label class="control-label" for="cbomodel">Jenis Kubah</label>
-                                <select name="cbomodel" id="cbomodel" class="form-control">
-                                    <option value='Kubah Utama'>Kubah Utama</option>
-                                    <option value='Mahrab'>Mahrab</option>
-                                    <option value='Anakan'>Anakan</option>
-                                    <option value='Menara'>Menara</option>
-                                    <option value='Atap'>Atap</option>
-                                </select>
-                                <label class="control-label" for="cbomodel">Tipe Kubah</label>
-                                <select name="cbomodel" id="cbomodel" class="form-control">
-                                    <option value=setbola>Setengah Bola</option>
-                                    <option value=pinang>Pinang</option>
-                                    <option value=madinah>Madinah</option>
-                                    <option value=bawang>Bawang</option>
-                                    <option value=custom>Custom</option>
-                                </select>
-                                <label class="control-label" for="txtwarna">Warna</label>
-                                <input name="txtwarna" id="txtwarna" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txtddalam">Diameter Dalam</label>
-                                <input name="txtddalam" id="txtddalam" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txtrangka">Rangka</label>
-                                <input name="txtrangka" id="txtrangka" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="control-label" for="txttglspk">Tgl SPK</label>
-                                <input name="txttglspk" id="txttglspk" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txttgldeadline">Deadline</label>
-                                <input name="txttgldeadline" id="txttgldeadline" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txttglinternal">Internal</label>
-                                <input name="txttglinternal" id="txttglinternal" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="cbokproject">Project</label>
-                                    <select class="form-control" name="cbokproject" id="cbokproject">
-                                        <?php
-                                        $selected = "";
-                                        if ($dataKk['kproyek'] == 'nonpatas') {
-                                            $selected = " selected";
-                                            echo '<option value="nonpatas"'.$selected.'>Non Patas</option>';
-                                            echo '<option value="patas">Patas</option>';
-                                        }elseif ($dataKk['kproyek']=="patas") {
-                                            $selected = " selected";
-                                            echo '<option value="nonpatas">Non Patas</option>';
-                                            echo '<option value="patas"'.$selected.'>Patas</option>';
-                                        }else{
-                                            echo '<option value="nonpatas">Non Patas</option>';
-                                            echo '<option value="patas">Patas</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                <label class="control-label" for="txtmakara">Makara</label>
-                                <input name="txtmakara" id="txtmakara" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txtsmakara">Spek Makara</label>
-                                <input name="txtsmakara" id="txtsmakara" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txtpenangkal">Penangkal Petir</label>
-                                <input name="txtpenangkal" id="txtpenangkal" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txtlampusorot">Lampu sorot</label>
-                                <input name="txtlampusorot" id="txtlampusorot" class="form-control" 
-                                value="<?php if ($_GET["mode"]=='edit'){ echo tgl_ind($dataspk["tanggal_transaksi"]); } ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                                <label class="control-label" for="txtlain">Lain-lain</label>
-                                <textarea name="txtlain" id="txtlain" class="form-control" ></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="col-lg-12">
-                <div class="box box-primary collapsed-box">
-                    <div class="box-header">
-                        <i class="ion ion-clipboard"></i>
                         <h3 class="box-title">Termin</h3>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
                             </button>
                         </div>
                     </div>
+                    <?php
+                    if ($_GET["mode"] == "edit") {
+                        if (isset($_GET["nospk"])){
+                            $nospk = secureParam($_GET["nospk"], $dbLink);
+                        }else{
+                            $nospk = "";
+                        }
+                        $q = "SELECT * FROM `aki_proyek` WHERE md5(nospk)='".$nospk."'";
+                        $rsTemp = mysql_query($q, $dbLink);
+                        if ($dataproyek = mysql_fetch_array($rsTemp)) {
+                           $qnik = "SELECT * FROM `aki_tabel_master` WHERE nik='".$dataproyek['ketuatim']."'";
+                           $rsnTemp = mysql_query($qnik, $dbLink2);
+                           if ($datanik = mysql_fetch_array($rsnTemp)) {
+                                echo "<input type='hidden' name='kodeTransaksi' value='" . $dataproyek["nospk"] . "'>";
+                           }
+                            
+                        } 
+                    } 
+                    ?>
                     <div class="box-body">
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label class="control-label" for="txtjpekerjaan">DP</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><input type="checkbox"></span>
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txtDt" id="txtDt" class="form-control" value="0" >
+                                    <span class="input-group-addon">
+                                        <?php
+                                            $chk='';
+                                            if ($dataproyek['dp']==1) {
+                                                $chk = "checked";
+                                            }
+                                            echo '<input type="checkbox" name="chkdp" id="chkdp" '.$chk.'>';
+                                        ?>
+                                    </span>
+                                    <input type="text" value="<?php echo $dataproyek['ket_dp']; ?>" class="form-control" name="ketdp" id="ketdp">
                                 </div>
                             </div>
                         </div>
@@ -291,8 +206,15 @@ return true;
                             <div class="form-group">
                                 <label class="control-label" for="txtT2">T2</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><input type="checkbox"></span>
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txtT2" id="txtT2" class="form-control" value="0" >
+                                    <span class="input-group-addon">
+                                        <?php
+                                            $chk='';
+                                            if ($dataproyek['t2']==1) {
+                                                $chk = "checked";
+                                            }
+                                            echo '<input type="checkbox" name="chkt2" id="chkt2" '.$chk.'>';
+                                        ?></span>
+                                    <input type="text" value="<?php echo $dataproyek['ket_t2']; ?>" name="kett2" id="kett2" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -300,8 +222,16 @@ return true;
                             <div class="form-group">
                                 <label class="control-label" for="txtT3">T3</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><input type="checkbox"></span>
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txtT3" id="txtT3" class="form-control" value="0" >
+                                    <span class="input-group-addon">
+                                        <?php
+                                            $chk='';
+                                            if ($dataproyek['t3']==1) {
+                                                $chk = "checked";
+                                            }
+                                            echo '<input type="checkbox" name="chkt3" id="chkt3" '.$chk.'>';
+                                        ?>
+                                    </span>
+                                    <input type="text" value="<?php echo $dataproyek['ket_t3']; ?>" name="kett3" id="kett3" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -309,8 +239,16 @@ return true;
                             <div class="form-group">
                                 <label class="control-label" for="txtT4">T4</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><input type="checkbox"></span>
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txtT4" id="txtT4" class="form-control" value="0" >
+                                    <span class="input-group-addon">
+                                        <?php
+                                            $chk='';
+                                            if ($dataproyek['t4']==1) {
+                                                $chk = "checked";
+                                            }
+                                            echo '<input type="checkbox" name="chkt4" id="chkt4" '.$chk.'>';
+                                        ?>
+                                    </span>
+                                    <input type="text" value="<?php echo $dataproyek['ket_t4']; ?>" name="kett4" id="kett4" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -318,8 +256,8 @@ return true;
                             <div class="form-group">
                                 <label class="control-label" for="txttransport">Biaya Transport</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><input type="checkbox"></span>
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txttransport" id="txttransport" class="form-control" value="0" >
+                                    <span class="input-group-addon">Rp</span>
+                                    <input type="text" value="<?php echo $dataproyek['biaya_transportasi']; ?>" name="biayatransport" id="biayatransport" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -327,8 +265,8 @@ return true;
                             <div class="form-group">
                                 <label class="control-label" for="txtkaligrafi">Biaya Kaligrafi</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon"><input type="checkbox"></span>
-                                    <input type="text"  onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" name="txtkaligrafi" id="txtkaligrafi" class="form-control" value="0" >
+                                    <span class="input-group-addon">Rp</span>
+                                    <input type="text" value="<?php echo $dataproyek['biaya_kaligrafi']; ?>" name="biayakaligrafi" id="biayakaligrafi" class="form-control" >                                
                                 </div>
                             </div>
                         </div>
@@ -341,7 +279,7 @@ return true;
                         <i class="ion ion-clipboard"></i>
                         <h3 class="box-title">Detail</h3>
                         <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
                         </div>
                     </div>
@@ -351,39 +289,39 @@ return true;
                                 <label class="control-label" for="rangka_in">Rangka</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="rangka_in" id="rangka_in" class="form-control tgl" >
+                                    <input type="text" name="rangka_in" id="rangka_in" class="form-control tgl" value="<?php echo $dataproyek['rangka_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="rangka_out" id="rangka_out" class="form-control tgl" >
+                                    <input type="text" name="rangka_out" id="rangka_out" class="form-control tgl" value="<?php echo $dataproyek['rangka_out']; ?>">
                                 </div>
                                 <label class="control-label" for="hollow_in">Hollow</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="hollow_in" id="hollow_in" class="form-control tgl" >
+                                    <input type="text" name="hollow_in" id="hollow_in" class="form-control tgl" value="<?php echo $dataproyek['hollow_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="hollow_out" id="hollow_out" class="form-control tgl" >
+                                    <input type="text" name="hollow_out" id="hollow_out" class="form-control tgl" value="<?php echo $dataproyek['hollow_out']; ?>">
                                     <span class="input-group-addon">HL Plafon</span>
-                                    <input type="text" name="hollow_plafon" id="hollow_plafon" class="form-control tgl" >
+                                    <input type="text" name="hollow_plafon" id="hollow_plafon" class="form-control tgl" value="<?php echo $dataproyek['hl_plafon']; ?>">
                                 </div>
                                 <label class="control-label" for="mal_in">Mal</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="mal_in" id="mal_in" class="form-control tgl" >
+                                    <input type="text" name="mal_in" id="mal_in" class="form-control tgl" value="<?php echo $dataproyek['mal_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="mal_out" id="mal_out" class="form-control tgl" >
+                                    <input type="text" name="mal_out" id="mal_out" class="form-control tgl" value="<?php echo $dataproyek['mal_out']; ?>">
                                 </div>
                                 <label class="control-label" for="gambar_in">Gambar Panel</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="gambar_in" id="gambar_in" class="form-control tgl" >
+                                    <input type="text" name="gambarp_in" id="gambarp_in" class="form-control tgl" value="<?php echo $dataproyek['gambarp_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="gambar_out" id="gambar_out" class="form-control tgl" >
+                                    <input type="text" name="gambarp_out" id="gambarp_out" class="form-control tgl" value="<?php echo $dataproyek['gambarp_out']; ?>">
                                 </div>
                                 <label class="control-label" for="gambar_in">Galvalume</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="bahan_in" id="bahan_in" class="form-control tgl" >
+                                    <input type="text" name="bahan_in" id="bahan_in" class="form-control tgl" value="<?php echo $dataproyek['bahan_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="bahan_out" id="bahan_out" class="form-control tgl" >
+                                    <input type="text" name="bahan_out" id="bahan_out" class="form-control tgl" value="<?php echo $dataproyek['bahan_out']; ?>">
                                 </div>
                             </div> 
                         </div>
@@ -392,58 +330,53 @@ return true;
                                 <label class="control-label" for="cat_in">Cat</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="cat_in" id="cat_in" class="form-control tgl" >
+                                    <input type="text" name="cat_in" id="cat_in" class="form-control tgl" value="<?php echo $dataproyek['cat_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="cat_out" id="cat_out" class="form-control tgl" >
+                                    <input type="text" name="cat_out" id="cat_out" class="form-control tgl" value="<?php echo $dataproyek['cat_out']; ?>">
                                     <span class="input-group-addon">Cat Makara</span>
-                                    <input type="text" name="catmakara" id="catmakara" class="form-control tgl" >
+                                    <input type="text" name="catmakara" id="catmakara" class="form-control tgl" value="<?php echo $dataproyek['catmakara']; ?>">
                                 </div>
                                 <label class="control-label" for="makara_in">Makara</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="makara_in" id="makara_in" class="form-control tgl" >
+                                    <input type="text" name="makara_in" id="makara_in" class="form-control tgl" value="<?php echo $dataproyek['makara_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="makara_out" id="makara_out" class="form-control tgl" >
+                                    <input type="text" name="makara_out" id="makara_out" class="form-control tgl" value="<?php echo $dataproyek['makara_out']; ?>">
                                     <span class="input-group-addon">Rangka GA</span>
-                                    <input type="text" name="rangka_ga" id="rangka_ga" class="form-control tgl" >
+                                    <input type="text" name="rangka_ga" id="rangka_ga" class="form-control tgl" value="<?php echo $dataproyek['rangka_ga']; ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Packing</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="packing_in" id="packing_in" class="form-control tgl" >
+                                    <input type="text" name="packing_in" id="packing_in" class="form-control tgl" value="<?php echo $dataproyek['packing_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="packing_out" id="packing_out" class="form-control tgl" >
+                                    <input type="text" name="packing_out" id="packing_out" class="form-control tgl" value="<?php echo $dataproyek['packing_out']; ?>">
                                     <span class="input-group-addon">PK Makara</span>
-                                    <input type="text" name="pk_packing" id="pk_packing" class="form-control tgl" >
+                                    <input type="text" name="pk_packing" id="pk_packing" class="form-control tgl" value="<?php echo $dataproyek['pk_packing']; ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Ekspedisi</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="packing_in" id="packing_in" class="form-control tgl" >
+                                    <input type="text" name="ekspedisi_in" id="ekspedisi_in" class="form-control tgl" value="<?php echo $dataproyek['ekspedisi_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="packing_out" id="packing_out" class="form-control tgl" >
+                                    <input type="text" name="ekspedisi_out" id="ekspedisi_out" class="form-control tgl" value="<?php echo $dataproyek['ekspedisi_out']; ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Pemasangan</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="packing_in" id="packing_in" class="form-control tgl" >
+                                    <input type="text" name="pemasangan_in" id="pemasangan_in" class="form-control tgl" value="<?php echo $dataproyek['pemasangan_in']; ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="packing_out" id="packing_out" class="form-control tgl" >
+                                    <input type="text" name="pemasangan_out" id="pemasangan_out" class="form-control tgl" value="<?php echo $dataproyek['pemasangan_out']; ?>" >
                                     <span class="input-group-addon">Out</span>
                                     <select class="form-control select2" name="txtketuatim" id="txtketuatim">
                                         <?php
-                                        $q = 'SELECT * FROM `aki_tabel_master` WHERE tanggal_nonaktif="0000-00-00"';
-                                        $sql_nik = mysql_query($q,$dbLink3);
+                                        $qnik = 'SELECT * FROM `aki_tabel_master` WHERE tanggal_nonaktif="0000-00-00"';
+                                        $sql_nik = mysql_query($qnik,$dbLink3);
                                         $selected = "";
                                         if ($_GET['mode'] == 'edit') {
-                                            echo '<option value="'.$dataSph["nik"].'" selected>'.$dataSph["pn"].' - '.$dataSph["kn"].'</option>';
+                                            echo '<option value="'.$dataproyek["ketuatim"].'" selected>'.$dataproyek['ketuatim'].' - '.$datanik['kname'].'</option>';
                                             while($rs_nik = mysql_fetch_assoc($sql_nik)){ 
-                                                echo '<option value="'.$rs_nik['nik'].'">'.$rs_nik['pname'].' - '.$rs_nik['kname'].'</option>';
-                                            }  
-                                        }else{
-                                            echo '<option value="">Address</option>';
-                                            while($rs_nik = mysql_fetch_assoc($sql_nik)){ 
-                                                echo '<option value="'.$rs_nik['nik'].'">'.$rs_nik['pname'].' - '.$rs_nik['kname'].'</option>';
+                                                echo '<option value="'.$rs_nik['nik'].'">'.$rs_nik['nik'].' - '.$rs_nik['kname'].'</option>';
                                             }  
                                         }
                                         ?>
@@ -457,16 +390,17 @@ return true;
             <section class="col-lg-12">
                 <div class="box box-default">
                     <div class="box-footer">
-                        <?php 
-                        if ($_GET['mode']=='edit'){
-                            echo '<input type="button" class="btn btn-primary" onclick="omodal()" value="Save">';
-                        }else{
-                            echo '<input type="submit" class="btn btn-primary" value="Save">';
-                        }
-                        ?>
                         <a href="index.php?page=html/proyek_list">
-                            <button type="button" class="btn btn-default pull-right">&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>    
+                            <button type="button" class="btn btn-default">&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>    
                         </a>
+                        <input type="submit" class="btn btn-primary pull-right" value="Save">
+                        <!-- <?php 
+                        if ($_GET['mode']=='edit'){
+                            echo '<input type="button" class="btn btn-primary pull-right" onclick="omodal()" value="Save">';
+                        }else{
+                            echo '<input type="submit" class="btn btn-primary pull-right" value="Save">';
+                        }
+                        ?> -->
                     </div>
                 </div>
             </section>
