@@ -313,39 +313,39 @@ return true;
                                 <label class="control-label" for="rangka_in">Rangka</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="rangka_in" id="rangka_in" class="form-control tgl" value="<?php echo $dataproyek['rangka_in']; ?>">
+                                    <input type="text" name="rangka_in" id="rangka_in" class="form-control tgl" value="<?php if($dataproyek['rangka_in']!='0000-00-00'){echo $dataproyek['rangka_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="rangka_out" id="rangka_out" class="form-control tgl" value="<?php echo $dataproyek['rangka_out']; ?>">
+                                    <input type="text" name="rangka_out" id="rangka_out" class="form-control tgl" value="<?php if($dataproyek['rangka_out']!='0000-00-00'){echo $dataproyek['rangka_out'];} ?>">
                                 </div>
                                 <label class="control-label" for="hollow_in">Hollow</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="hollow_in" id="hollow_in" class="form-control tgl" value="<?php echo $dataproyek['hollow_in']; ?>">
+                                    <input type="text" name="hollow_in" id="hollow_in" class="form-control tgl" value="<?php if($dataproyek['hollow_in']!='0000-00-00'){echo $dataproyek['hollow_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="hollow_out" id="hollow_out" class="form-control tgl" value="<?php echo $dataproyek['hollow_out']; ?>">
+                                    <input type="text" name="hollow_out" id="hollow_out" class="form-control tgl" value="<?php if($dataproyek['hollow_out']!='0000-00-00'){echo $dataproyek['hollow_out'];} ?>">
                                     <span class="input-group-addon">HL Plafon</span>
-                                    <input type="text" name="hollow_plafon" id="hollow_plafon" class="form-control tgl" value="<?php echo $dataproyek['hl_plafon']; ?>">
+                                    <input type="text" name="hollow_plafon" id="hollow_plafon" class="form-control tgl" value="<?php if($dataproyek['hl_plafon']!='0000-00-00'){echo $dataproyek['hl_plafon'];} ?>">
                                 </div>
                                 <label class="control-label" for="mal_in">Mal</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="mal_in" id="mal_in" class="form-control tgl" value="<?php echo $dataproyek['mal_in']; ?>">
+                                    <input type="text" name="mal_in" id="mal_in" class="form-control tgl" value="<?php if($dataproyek['hl_plafon']!='0000-00-00'){echo $dataproyek['mal_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="mal_out" id="mal_out" class="form-control tgl" value="<?php echo $dataproyek['mal_out']; ?>">
+                                    <input type="text" name="mal_out" id="mal_out" class="form-control tgl" value="<?php if($dataproyek['mal_out']!='0000-00-00'){echo $dataproyek['mal_out'];} ?>">
                                 </div>
                                 <label class="control-label" for="gambar_in">Gambar Panel</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="gambarp_in" id="gambarp_in" class="form-control tgl" value="<?php echo $dataproyek['gambarp_in']; ?>">
+                                    <input type="text" name="gambarp_in" id="gambarp_in" class="form-control tgl" value="<?php if($dataproyek['gambarp_in']!='0000-00-00'){echo $dataproyek['gambarp_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="gambarp_out" id="gambarp_out" class="form-control tgl" value="<?php echo $dataproyek['gambarp_out']; ?>">
+                                    <input type="text" name="gambarp_out" id="gambarp_out" class="form-control tgl" value="<?php if($dataproyek['gambarp_out']!='0000-00-00'){ echo $dataproyek['gambarp_out'];} ?>">
                                 </div>
                                 <label class="control-label" for="gambar_in">Galvalume</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="bahan_in" id="bahan_in" class="form-control tgl" value="<?php echo $dataproyek['bahan_in']; ?>">
+                                    <input type="text" name="bahan_in" id="bahan_in" class="form-control tgl" value="<?php if($dataproyek['bahan_in']!='0000-00-00'){echo $dataproyek['bahan_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="bahan_out" id="bahan_out" class="form-control tgl" value="<?php echo $dataproyek['bahan_out']; ?>">
+                                    <input type="text" name="bahan_out" id="bahan_out" class="form-control tgl" value="<?php if($dataproyek['bahan_out']!='0000-00-00'){echo $dataproyek['bahan_out'];} ?>">
                                 </div>
                             </div> 
                         </div>
@@ -354,43 +354,43 @@ return true;
                                 <label class="control-label" for="cat_in">Cat</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="cat_in" id="cat_in" class="form-control tgl" value="<?php echo $dataproyek['cat_in']; ?>">
+                                    <input type="text" name="cat_in" id="cat_in" class="form-control tgl" value="<?php if($dataproyek['cat_in']!='0000-00-00'){echo $dataproyek['cat_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="cat_out" id="cat_out" class="form-control tgl" value="<?php echo $dataproyek['cat_out']; ?>">
+                                    <input type="text" name="cat_out" id="cat_out" class="form-control tgl" value="<?php if($dataproyek['cat_out']!='0000-00-00'){echo $dataproyek['cat_out'];} ?>">
                                     <span class="input-group-addon">Cat Makara</span>
-                                    <input type="text" name="catmakara" id="catmakara" class="form-control tgl" value="<?php echo $dataproyek['catmakara']; ?>">
+                                    <input type="text" name="catmakara" id="catmakara" class="form-control tgl" value="<?php if($dataproyek['catmakara']!='0000-00-00'){echo $dataproyek['catmakara'];} ?>">
                                 </div>
                                 <label class="control-label" for="makara_in">Makara</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="makara_in" id="makara_in" class="form-control tgl" value="<?php echo $dataproyek['makara_in']; ?>">
+                                    <input type="text" name="makara_in" id="makara_in" class="form-control tgl" value="<?php if($dataproyek['makara_in']!='0000-00-00'){echo $dataproyek['makara_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="makara_out" id="makara_out" class="form-control tgl" value="<?php echo $dataproyek['makara_out']; ?>">
+                                    <input type="text" name="makara_out" id="makara_out" class="form-control tgl" value="<?php if($dataproyek['makara_out']!='0000-00-00'){echo $dataproyek['makara_out'];} ?>">
                                     <span class="input-group-addon">Rangka GA</span>
-                                    <input type="text" name="rangka_ga" id="rangka_ga" class="form-control tgl" value="<?php echo $dataproyek['rangka_ga']; ?>">
+                                    <input type="text" name="rangka_ga" id="rangka_ga" class="form-control tgl" value="<?php if($dataproyek['rangka_ga']!='0000-00-00'){echo $dataproyek['rangka_ga'];} ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Packing</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="packing_in" id="packing_in" class="form-control tgl" value="<?php echo $dataproyek['packing_in']; ?>">
+                                    <input type="text" name="packing_in" id="packing_in" class="form-control tgl" value="<?php if($dataproyek['packing_in']!='0000-00-00'){echo $dataproyek['packing_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="packing_out" id="packing_out" class="form-control tgl" value="<?php echo $dataproyek['packing_out']; ?>">
+                                    <input type="text" name="packing_out" id="packing_out" class="form-control tgl" value="<?php if($dataproyek['packing_out']!='0000-00-00'){echo $dataproyek['packing_out'];} ?>">
                                     <span class="input-group-addon">PK Makara</span>
-                                    <input type="text" name="pk_makara" id="pk_makara" class="form-control tgl" value="<?php echo $dataproyek['pk_makara']; ?>">
+                                    <input type="text" name="pk_makara" id="pk_makara" class="form-control tgl" value="<?php if($dataproyek['pk_makara']!='0000-00-00'){echo $dataproyek['pk_makara'];} ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Ekspedisi</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="ekspedisi_in" id="ekspedisi_in" class="form-control tgl" value="<?php echo $dataproyek['ekspedisi_in']; ?>">
+                                    <input type="text" name="ekspedisi_in" id="ekspedisi_in" class="form-control tgl" value="<?php if($dataproyek['ekspedisi_in']!='0000-00-00'){echo $dataproyek['ekspedisi_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="ekspedisi_out" id="ekspedisi_out" class="form-control tgl" value="<?php echo $dataproyek['ekspedisi_out']; ?>">
+                                    <input type="text" name="ekspedisi_out" id="ekspedisi_out" class="form-control tgl" value="<?php if($dataproyek['ekspedisi_out']!='0000-00-00'){echo $dataproyek['ekspedisi_out'];} ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Pemasangan</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
-                                    <input type="text" name="pemasangan_in" id="pemasangan_in" class="form-control tgl" value="<?php echo $dataproyek['pemasangan_in']; ?>">
+                                    <input type="text" name="pemasangan_in" id="pemasangan_in" class="form-control tgl" value="<?php if($dataproyek['pemasangan_in']!='0000-00-00'){echo $dataproyek['pemasangan_in'];} ?>">
                                     <span class="input-group-addon">Out</span>
-                                    <input type="text" name="pemasangan_out" id="pemasangan_out" class="form-control tgl" value="<?php echo $dataproyek['pemasangan_out']; ?>" >
+                                    <input type="text" name="pemasangan_out" id="pemasangan_out" class="form-control tgl" value="<?php if($dataproyek['pemasangan_out']!='0000-00-00'){echo $dataproyek['pemasangan_out'];} ?>" >
                                     <span class="input-group-addon">Out</span>
                                     <select class="form-control select2" name="txtketuatim" id="txtketuatim">
                                         <?php
