@@ -55,10 +55,10 @@ class c_proyek
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
-			/*$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."'";
+			$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."'";
 			$q3.= " WHERE noproyek='".$noproject."'";
 			if (!mysql_query( $q3, $dbLink))
-				throw new Exception($q3.'Gagal Add Project1. ');*/
+				throw new Exception($q3.'Gagal Add Project1. ');
 			$ket =" -Update to Project noproyek=".$noproject.", datetime: ".$tgl;
 			$q4 = "INSERT INTO `aki_report`( `kodeUser`, `datetime`, `ket`) VALUES";
 			$q4.= "('".$pembuat."','".$tgl."','".$ket."');";

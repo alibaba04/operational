@@ -252,6 +252,35 @@ class c_spk
 		$ekspedisi_out = secureParam($params["ekspedisi_out"],$dbLink);
 		$pemasangan_in = secureParam($params["pemasangan_in"],$dbLink);
 		$pemasangan_out = secureParam($params["pemasangan_out"],$dbLink);
+		$ketuatim = secureParam($params["txtketuatim"],$dbLink);
+		if ($params["chkdp"] == 'on') {
+			$dp = 1;
+		}else{
+			$dp = 0;
+		}
+		$ket_dp = secureParam($params["ketdp"],$dbLink);
+		if ($params["chkt2"] == 'on') {
+			$t2 = 1;
+		}else{
+			$t2 = 0;
+		}
+		$ket_t2 = secureParam($params["kett2"],$dbLink);
+		if ($params["chkt3"] == 'on') {
+			$t3 = 1;
+		}else{
+			$t3 = 0;
+		}
+		$ket_t3 = secureParam($params["kett3"],$dbLink);
+		if ($params["chkt4"] == 'on') {
+			$t4 = 1;
+		}else{
+			$t4 = 0;
+		}
+		$ket_t4 = secureParam($params["kett4"],$dbLink);
+		$bt = secureParam($params["biayatransport"],$dbLink);
+		$biaya_transportasi = preg_replace("/\D/", "", $bt);
+		$bk = secureParam($params["biayakaligrafi"],$dbLink);
+		$biaya_kaligrafi = preg_replace("/\D/", "", $bk);
 
 		$nospk = secureParam($params["txtnospk"],$dbLink);
 		$noproject = secureParam($params["txtnoproyek"],$dbLink);
@@ -266,17 +295,17 @@ class c_spk
 				throw new Exception('Could not begin transaction');
 			}
 
-			$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."'`cat_in`='".$bahan_out."',`cat_out`='".$bahan_out."',`catmakara`='".$bahan_out."',`makara_in`='".$bahan_out."',`makara_out`='".$bahan_out."',`rangka_ga`=[value-22],`packing_in`=[value-23],`packing_out`=[value-24],`pk_makara`=[value-25],`ekspedisi_in`=[value-26],`ekspedisi_out`=[value-27],`pemasangan_in`=[value-28],`pemasangan_out`=[value-29],";
+			$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."',`cat_in`='".$cat_in."',`cat_out`='".$cat_out."',`catmakara`='".$catmakara."',`makara_in`='".$makara_in."',`makara_out`='".$makara_out."',`rangka_ga`='".$rangka_ga."',`packing_in`='".$packing_in."',`packing_out`='".$packing_out."',`pk_makara`='".$pk_makara."',`ekspedisi_in`='".$ekspedisi_in."',`ekspedisi_out`='".$ekspedisi_out."',`pemasangan_in`='".$pemasangan_in."',`pemasangan_out`='".$pemasangan_out."',`ketuatim`='".$ketuatim."',`dp`='".$dp."',`ket_dp`='".$ket_dp."',`t2`='".$t2."',`ket_t2`='".$ket_t2."',`t3`='".$t3."',`ket_t3`='".$ket_t3."',`t4`='".$t4."',`ket_t4`='".$ket_t4."',`biaya_transportasi`='".$biaya_transportasi."',`biaya_kaligrafi`='".$biaya_kaligrafi."',`kodeUser`='".$pembuat."'";
 			$q3.= " WHERE noproyek='".$noproject."'";
 			if (!mysql_query( $q3, $dbLink))
-				throw new Exception($q4.'Gagal Add Project2. ');
+				throw new Exception('Gagal Update Proyek2. ');
 
 			@mysql_query("COMMIT", $dbLink2);
-			$this->strResults="Sukses Hapus Data KK ";
+			$this->strResults="Sukses Update Proyek ";
 		}
 		catch(Exception $e) 
 		{
-			  $this->strResults="Gagal Hapus Data KK - ".$e->getMessage().'<br/>';
+			  $this->strResults="Gagal Update Proyek - ".$e->getMessage().'<br/>';
 			  $result = @mysql_query('ROLLBACK', $dbLink2);
 			  $result = @mysql_query('SET AUTOCOMMIT=1', $dbLink2);
 			  return $this->strResults;

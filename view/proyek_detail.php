@@ -55,7 +55,30 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         $(".tgl").datepicker({ format: 'yyyy-mm-dd', autoclose:true }); 
         $("#txttgldeadline").datepicker({ format: 'yyyy-mm-dd', autoclose:true });
         $("#txttglinternal").datepicker({ format: 'yyyy-mm-dd', autoclose:true });
+        var btransport = document.getElementById('biayatransport');
+        btransport.addEventListener('keyup', function(e){
+            btransport.value = formatRupiah(this.value,'');
+        });
+        var bkaligrafi = document.getElementById('biayakaligrafi');
+        bkaligrafi.addEventListener('keyup', function(e){
+            bkaligrafi.value = formatRupiah(this.value,'');
+        });
     });
+    function formatRupiah(angka, prefix){
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split           = number_string.split(','),
+        sisa            = split[0].length % 3,
+        rupiah          = split[0].substr(0, sisa),
+        ribuan          = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if(ribuan){
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
+    }
 </script>
 <!-- Include script untuk function auto complete -->
 <script type="text/javascript" src="js/autoCompletebox.js"></script>
@@ -257,7 +280,7 @@ return true;
                                 <label class="control-label" for="txttransport">Biaya Transport</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">Rp</span>
-                                    <input type="text" value="<?php echo $dataproyek['biaya_transportasi']; ?>" name="biayatransport" id="biayatransport" class="form-control" >
+                                    <input type="text" value="<?php echo number_format($dataproyek['biaya_transportasi']); ?>" name="biayatransport" id="biayatransport" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -266,7 +289,7 @@ return true;
                                 <label class="control-label" for="txtkaligrafi">Biaya Kaligrafi</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">Rp</span>
-                                    <input type="text" value="<?php echo $dataproyek['biaya_kaligrafi']; ?>" name="biayakaligrafi" id="biayakaligrafi" class="form-control" >                                
+                                    <input type="text" value="<?php echo number_format($dataproyek['biaya_kaligrafi']); ?>" name="biayakaligrafi" id="biayakaligrafi" class="form-control" >                                
                                 </div>
                             </div>
                         </div>
@@ -352,7 +375,7 @@ return true;
                                     <span class="input-group-addon">Out</span>
                                     <input type="text" name="packing_out" id="packing_out" class="form-control tgl" value="<?php echo $dataproyek['packing_out']; ?>">
                                     <span class="input-group-addon">PK Makara</span>
-                                    <input type="text" name="pk_packing" id="pk_packing" class="form-control tgl" value="<?php echo $dataproyek['pk_packing']; ?>">
+                                    <input type="text" name="pk_makara" id="pk_makara" class="form-control tgl" value="<?php echo $dataproyek['pk_makara']; ?>">
                                 </div>
                                 <label class="control-label" for="packing_in">Ekspedisi</label>
                                 <div class="input-group">
@@ -374,7 +397,12 @@ return true;
                                         $sql_nik = mysql_query($qnik,$dbLink3);
                                         $selected = "";
                                         if ($_GET['mode'] == 'edit') {
-                                            echo '<option value="'.$dataproyek["ketuatim"].'" selected>'.$dataproyek['ketuatim'].' - '.$datanik['kname'].'</option>';
+                                            if ($dataproyek['ketuatim']=='') {
+                                                echo '<option value="'.$dataproyek["ketuatim"].'" selected>'.$dataproyek['ketuatim'].' - '.$datanik['kname'].'</option>';
+                                            }else{
+                                                echo '<option value="'.$dataproyek["ketuatim"].'" selected>'.$dataproyek['ketuatim'].' - '.$datanik['kname'].'</option>';
+                                            }
+                                            
                                             while($rs_nik = mysql_fetch_assoc($sql_nik)){ 
                                                 echo '<option value="'.$rs_nik['nik'].'">'.$rs_nik['nik'].' - '.$rs_nik['kname'].'</option>';
                                             }  
