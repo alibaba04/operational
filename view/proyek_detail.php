@@ -14,6 +14,7 @@ if ($hakUser != 90) {
     die('User cannot access this page!');
     echo "</p>";
 }
+error_reporting(0);
 //Periksa apakah merupakan proses headerless (tambah, edit atau hapus) dan apakah hak user cukup
 if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     require_once("./class/c_spk.php");
