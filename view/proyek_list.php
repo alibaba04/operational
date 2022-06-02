@@ -59,6 +59,10 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         $('.datepicker').datepicker({
             autoclose: true
         });
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 
     function termin(){
@@ -172,63 +176,21 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 $rs = new MySQLPagedResultSet($q, 50, $dbLink2);
                 ?>
                 <div class="box-header">
-                    <i class="ion ion-clipboard"></i>
-                    <ul class="pagination pagination-sm inline"><?php echo $snum.$rs->getPageNav($_SERVER['QUERY_STRING']) ?></ul>
                     <?php
                     if ($_SESSION['my']->privilege == 'ADMIN') {
                         echo '<a href="class/c_exportexcel.php?"><button class="btn btn-info pull-right"><i class="ion ion-ios-download"></i> Export Excel</button></a>';
                     }
                     ?>
                 </div>
-                <style type="text/css">
-                    table{
-                        background-color: white;
-                        text-align:center;
-                    }
-                    th{
-                        text-align:center;
-                    }
-                    .viewt {
-                        margin: auto;
-                        width: 600px;
-                    }
-
-                    .wrappert {
-                        position: relative;
-                        overflow: auto;
-                        white-space: nowrap;
-                    }
-
-                    .sticky-col {
-                        position: -webkit-sticky;
-                        position: sticky;
-                        background-color: white;
-                    }
-
-                    .first-col {
-                        width: 100px;
-                        min-width: 100px;
-                        max-width: 100px;
-                        left: 0px;
-                    }
-
-                    .second-col {
-                        width: 150px;
-                        min-width: 200px;
-                        max-width: 200px;
-                        left: 100px;
-                    }
-                    #ptgl{
-                        min-width: 155px;
-                    }
-                </style>
-                <div class="box-body viewt" style="width: 100%;overflow-x: scroll;background-color: white;">
+                <div class="box-body">
                     <div class="wrappert">
-                        <table class="table table-bordered table-striped table-hover" >
+                        <table id="example1" class="table table-bordered table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    <th class='sticky-col first-col'>Kode Proyek</th>
-                                    <th class='sticky-col second-col'>No SPK</th>
+                                    <!-- <th class='sticky-col first-col'>Kode Proyek</th>
+                                    <th class='sticky-col second-col'>No SPK</th> -->
+                                    <th>KODE</th>
+                                    <th>No SPK</th>
                                     <th>Customer</th>
                                     <th>Masjid</th>
                                     <th>Detail</th>
@@ -246,9 +208,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 $rowCounter=1;
                                 while ($query_data = $rs->fetchArray()) {
                                     echo "<tr>";
-                                    echo "<td class='sticky-col first-col'><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>
-                                    <button type='button' class='btn btn-block btn-info'>".($query_data["noproyek"])."</button></a></td>";
-                                    echo "<td class='sticky-col second-col'>" . ($query_data["nospk"]) . "</td>";
+                                    echo "<td><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>".($query_data["noproyek"])."</a></td>";
+                                    echo "<td>" . ($query_data["nospk"]) . "</td>";
                                     echo "<td>" . $query_data["nama_cust"] . "</td>";
                                     echo "<td>" . $query_data["masjid"] . "</td>";
                                     $kel = '';

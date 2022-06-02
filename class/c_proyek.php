@@ -23,7 +23,7 @@ class c_proyek
 
 	function edit(&$params) 
 	{
-		global $dbLink;
+		global $dbLink2;
 		require_once './function/fungsi_formatdate.php';
 		//Jika input tidak valid, langsung kembalikan pesan error ke user ($this->strResults)
 		if(!$this->validate($params))
@@ -32,24 +32,24 @@ class c_proyek
 			return $this->strResults;
 		}
 		$tglTransaksi = date("Y-m-d");
-		$rangka_in = secureParam($params["rangka_in"],$dbLink);
-		$rangka_out = secureParam($params["rangka_out"],$dbLink);
-		$hollow_in = secureParam($params["hollow_in"],$dbLink);
-		$hollow_out = secureParam($params["hollow_out"],$dbLink);
-		$hl_plafon = secureParam($params["hollow_plafon"],$dbLink);
-		$mal_in = secureParam($params["mal_in"],$dbLink);
-		$mal_out = secureParam($params["mal_out"],$dbLink);
-		$gambarp_in = secureParam($params["gambarp_in"],$dbLink);
-		$gambarp_out = secureParam($params["gambarp_out"],$dbLink);
-		$bahan_in = secureParam($params["bahan_in"],$dbLink);
-		$bahan_out = secureParam($params["bahan_out"],$dbLink);
-		$nospk = secureParam($params["txtnospk"],$dbLink);
-		$noproject = secureParam($params["txtnoproyek"],$dbLink);
+		$rangka_in = secureParam($params["rangka_in"],$dbLink2);
+		$rangka_out = secureParam($params["rangka_out"],$dbLink2);
+		$hollow_in = secureParam($params["hollow_in"],$dbLink2);
+		$hollow_out = secureParam($params["hollow_out"],$dbLink2);
+		$hl_plafon = secureParam($params["hollow_plafon"],$dbLink2);
+		$mal_in = secureParam($params["mal_in"],$dbLink2);
+		$mal_out = secureParam($params["mal_out"],$dbLink2);
+		$gambarp_in = secureParam($params["gambarp_in"],$dbLink2);
+		$gambarp_out = secureParam($params["gambarp_out"],$dbLink2);
+		$bahan_in = secureParam($params["bahan_in"],$dbLink2);
+		$bahan_out = secureParam($params["bahan_out"],$dbLink2);
+		$nospk = secureParam($params["txtnospk"],$dbLink2);
+		$noproject = secureParam($params["txtnoproyek"],$dbLink2);
         $pembuat = $_SESSION["my"]->id;
 		try
 		{
-			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink);
-			$result = @mysql_query('BEGIN', $dbLink);
+			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink2);
+			$result = @mysql_query('BEGIN', $dbLink2);
 			date_default_timezone_set("Asia/Jakarta");
 			$tgl = date("Y-m-d H:i:s");
 			if (!$result) {
@@ -57,19 +57,19 @@ class c_proyek
 			}
 			$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."'";
 			$q3.= " WHERE noproyek='".$noproject."'";
-			if (!mysql_query( $q3, $dbLink))
+			if (!mysql_query( $q3, $dbLink2))
 				throw new Exception($q3.'Gagal Add Project1. ');
 			$ket =" -Update to Project noproyek=".$noproject.", datetime: ".$tgl;
 			$q4 = "INSERT INTO `aki_report`( `kodeUser`, `datetime`, `ket`) VALUES";
 			$q4.= "('".$pembuat."','".$tgl."','".$ket."');";
-			if (!mysql_query( $q4, $dbLink))
+			if (!mysql_query( $q4, $dbLink2))
 				throw new Exception($q4.'Gagal Add Project2. ');
 			$q4= "UPDATE `aki_proyek` SET `dp`='2' WHERE noproyek='S0002'";
-			if (!mysql_query( $q4, $dbLink))
+			if (!mysql_query( $q4, $dbLink2))
 				throw new Exception($q4.'Gagal Add Project2. ');
 			$q5 = "INSERT INTO `aki_proyek`(`noproyek`, `noSpk`, `noKK`, `tanggal`, `kodeUser`) VALUES";
 			$q5.= "('".$noproject."','0003/SPK-MS/PTAKI/II/2022','0003/SPK-MS/PTAKI/II/2022','".$tgl."','".$pembuat."');";
-			if (!mysql_query( $q5, $dbLink))
+			if (!mysql_query( $q5, $dbLink2))
 						throw new Exception($q5.'Gagal Add Project2. ');
 			//API send firebase
 			/*$privilegeU='';
@@ -80,7 +80,7 @@ class c_proyek
 			}else{
 				$privilegeU = 'GODMODE';
 			}
-			$rsTemp=mysql_query("SELECT s.*,g.kodeGroup FROM `aki_user` s left join aki_usergroup g on s.kodeUser=g.kodeUser where g.kodeGroup='".$privilegeU."' limit 1", $dbLink);
+			$rsTemp=mysql_query("SELECT s.*,g.kodeGroup FROM `aki_user` s left join aki_usergroup g on s.kodeUser=g.kodeUser where g.kodeGroup='".$privilegeU."' limit 1", $dbLink2);
 			$temp = mysql_fetch_array($rsTemp);
 			$token=$temp['token'];
 			$Message = "SIKUBAH - Message from ".$_SESSION["my"]->privilege." Please Check 'Kontrak Kerja'. Nomor KK : '".$nokk."', Note : '".$treport."' ";
@@ -106,14 +106,14 @@ class c_proyek
 			$result=curl_exec($ch);
 			print_r($result);
 			curl_close($ch);
-			@mysql_query("COMMIT", $dbLink);*/
+			@mysql_query("COMMIT", $dbLink2);*/
 			$this->strResults=$q5."Sukses Edit";
 		}
 		catch(Exception $e) 
 		{
 			  $this->strResults="Gagal Add Project - ".$e->getMessage().'<br/>';
-			  $result = @mysql_query('ROLLBACK', $dbLink);
-			  $result = @mysql_query('SET AUTOCOMMIT=1', $dbLink);
+			  $result = @mysql_query('ROLLBACK', $dbLink2);
+			  $result = @mysql_query('SET AUTOCOMMIT=1', $dbLink2);
 			  return $this->strResults;
 		}
 		return $this->strResults;

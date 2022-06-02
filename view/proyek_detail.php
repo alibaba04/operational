@@ -340,7 +340,7 @@ return true;
                                     <span class="input-group-addon">Out</span>
                                     <input type="text" name="gambarp_out" id="gambarp_out" class="form-control tgl" value="<?php if($dataproyek['gambarp_out']!='0000-00-00'){ echo $dataproyek['gambarp_out'];} ?>">
                                 </div>
-                                <label class="control-label" for="gambar_in">Galvalume</label>
+                                <label class="control-label" for="gambar_in"><?php echo $dataspk["bahan"]; ?></label>
                                 <div class="input-group">
                                     <span class="input-group-addon">In</span>
                                     <input type="text" name="bahan_in" id="bahan_in" class="form-control tgl" value="<?php if($dataproyek['bahan_in']!='0000-00-00'){echo $dataproyek['bahan_in'];} ?>">

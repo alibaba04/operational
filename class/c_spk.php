@@ -20,14 +20,45 @@ class c_spk
 		}       
 		return $temp;
 	}
+	function addproyek(&$params){
+		global $dbLink2;
+		require_once './function/fungsi_formatdate.php';
+		require_once( './config2.php' );
+		$tglTransaksi = date("Y-m-d");
+		$nokk = secureParam($params["txtnoKk"],$dbLink2);
+		$nospk = secureParam($params["txtnoSpk"],$dbLink2);
+		$noproject = secureParam($params["txtnoproject"],$dbLink2);
+        $pembuat = $_SESSION["my"]->id;
+		try
+		{
+			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink2);
+			$result = @mysql_query('BEGIN', $dbLink2);
+			date_default_timezone_set("Asia/Jakarta");
+			$tgl = date("Y-m-d H:i:s");
+			if (!$result) {
+				throw new Exception('Could not begin transaction');
+			}
+			$q5 = "INSERT INTO `aki_proyek`(`noproyek`, `noSpk`, `noKK`, `tanggal`, `kodeUser`) VALUES";
+			$q5.= "('".$noproject."','0003/SPK-MS/PTAKI/II/2022','0003/SPK-MS/PTAKI/II/2022','".$tgl."','".$pembuat."');";
+			if (!mysql_query( $q5, $dbLink2))
+						throw new Exception($q5.'Gagal Add Project2. ');
+			$this->strResults=$q5."Sukses add";
+		}
+		catch(Exception $e) 
+		{
+			  $this->strResults="Gagal Add Project - ".$e->getMessage().'<br/>';
+			  $result = @mysql_query('ROLLBACK', $dbLink2);
+			  $result = @mysql_query('SET AUTOCOMMIT=1', $dbLink2);
+			  return $this->strResults;
+		}
+		return $this->strResults;
+	}
 
 	function edit(&$params) 
 	{
 		global $dbLink2;
-		global $dbLink;
 		require_once './function/fungsi_formatdate.php';
 		require_once( './config2.php' );
-		$q='';
 		//Jika input tidak valid, langsung kembalikan pesan error ke user ($this->strResults)
 		if(!$this->validate($params))
 		{	//Pesan error harus diawali kata "Gagal"
@@ -48,22 +79,27 @@ class c_spk
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
+			/*$q = "INSERT INTO `aki_proyek`( `noproyek`, `noSpk`, `noKK`, `tanggal`, `rangka_in`, `rangka_out`, `hollow_in`, `hollow_out`, `hl_plafon`, `mal_in`, `mal_out`, `gambarp_in`, `gambarp_out`, `bahan_in`, `bahan_out`, `cat_in`, `cat_out`, `catmakara`, `makara_in`, `makara_out`, `rangka_ga`, `packing_in`, `packing_out`, `pk_makara`, `ekspedisi_in`, `ekspedisi_out`, `pemasangan_in`, `pemasangan_out`, `ketuatim`, `dp`, `ket_dp`, `t2`, `ket_t2`, `t3`, `ket_t3`, `t4`, `ket_t4`, `biaya_transportasi`, `biaya_kaligrafi`, `kodeUser`) VALUES ";
+			$q.= "('".$noproject."','".$nospk."','".$nokk."','".$tgl."','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','-',0,'-',0,'-',0,'-',0,'-',0,0,'".$pembuat."');";
+			if (!mysql_query( $q, $dbLink2))
+				throw new Exception($q.'Gagal Add Project2. ');*/
+			$q1 = "INSERT INTO `aki_proyek`(`noproyek`, `noSpk`, `noKk`) VALUES ('".$noproject."','".$nospk."','".$nokk."')";
+			if (!mysql_query( $q1, $dbLink2))
+				throw new Exception($q1.'Gagal Add Project1. ');
+
 			$q3 = "UPDATE aki_spk SET `noproyek`='".$noproject."'  WHERE nokk='".$nokk."'";
 			if (!mysql_query( $q3, $dbLink2))
 				throw new Exception($q3.'Gagal Add Project1. ');
 			
-			$q5 = "INSERT INTO `aki_proyek`(`noproyek`, `noSpk`, `noKK`, `tanggal`, `kodeUser`) VALUES";
-			$q5.= "('".$noproject."','".$nospk."','".$nokk."','".$tgl."','".$pembuat."');";
-			if (!mysql_query( $q5, $dbLink))
-						throw new Exception($q5.'Gagal Add Project2. ');
-
-			
-			$ket = "`nomer`=".$params["txtnoKk"]."  -has Add to Project, datetime: ".$tgl;
+			/*$ket = "`nomer`=".$params["txtnoKk"]."  -has Add to Project, datetime: ".$tgl;
 			$q4 = "INSERT INTO `aki_report`( `kodeUser`, `datetime`, `ket`) VALUES";
 			$q4.= "('".$pembuat."','".$tgl."','".$ket."');";
 			if (!mysql_query( $q4, $dbLink2))
-						throw new Exception($q4.'Gagal Add Project2. ');
-
+				throw new Exception($q4.'Gagal Add Project2. ');
+*/
+			
+			/*if (!mysql_query( $q5, $dbLink2))
+				throw new Exception($q5.'Gagal Add Project2. ');*/
 			//API send firebase
 			/*$privilegeU='';
 			if ($_SESSION["my"]->privilege == 'ADMIN') {
@@ -100,7 +136,7 @@ class c_spk
 			print_r($result);
 			curl_close($ch);
 			@mysql_query("COMMIT", $dbLink2);*/
-			$this->strResults="Sukses Edit";
+			$this->strResults=$q1."Sukses Edit";
 		}
 		catch(Exception $e) 
 		{
@@ -227,68 +263,68 @@ class c_spk
 		require_once './function/fungsi_formatdate.php';
 		//Jika input tidak valid, langsung kembalikan pesan error ke user ($this->strResults)
 		$tglTransaksi = date("Y-m-d");
-		$rangka_in = secureParam($params["rangka_in"],$dbLink);
-		$rangka_out = secureParam($params["rangka_out"],$dbLink);
-		$hollow_in = secureParam($params["hollow_in"],$dbLink);
-		$hollow_out = secureParam($params["hollow_out"],$dbLink);
-		$hl_plafon = secureParam($params["hollow_plafon"],$dbLink);
-		$mal_in = secureParam($params["mal_in"],$dbLink);
-		$mal_out = secureParam($params["mal_out"],$dbLink);
-		$gambarp_in = secureParam($params["gambarp_in"],$dbLink);
-		$gambarp_out = secureParam($params["gambarp_out"],$dbLink);
-		$bahan_in = secureParam($params["bahan_in"],$dbLink);
-		$bahan_out = secureParam($params["bahan_out"],$dbLink);
-		$cat_in = secureParam($params["cat_in"],$dbLink);
-		$cat_out = secureParam($params["cat_out"],$dbLink);
-		$catmakara = secureParam($params["catmakara"],$dbLink);
-		$makara_in = secureParam($params["makara_in"],$dbLink);
-		$makara_out = secureParam($params["makara_out"],$dbLink);
-		$noproject = secureParam($params["txtnoproyek"],$dbLink);
-		$rangka_ga = secureParam($params["rangka_ga"],$dbLink);
-		$packing_in = secureParam($params["packing_in"],$dbLink);
-		$packing_out = secureParam($params["packing_out"],$dbLink);
-		$pk_makara = secureParam($params["pk_makara"],$dbLink);
-		$ekspedisi_in = secureParam($params["ekspedisi_in"],$dbLink);
-		$ekspedisi_out = secureParam($params["ekspedisi_out"],$dbLink);
-		$pemasangan_in = secureParam($params["pemasangan_in"],$dbLink);
-		$pemasangan_out = secureParam($params["pemasangan_out"],$dbLink);
-		$ketuatim = secureParam($params["txtketuatim"],$dbLink);
+		$rangka_in = secureParam($params["rangka_in"],$dbLink2);
+		$rangka_out = secureParam($params["rangka_out"],$dbLink2);
+		$hollow_in = secureParam($params["hollow_in"],$dbLink2);
+		$hollow_out = secureParam($params["hollow_out"],$dbLink2);
+		$hl_plafon = secureParam($params["hollow_plafon"],$dbLink2);
+		$mal_in = secureParam($params["mal_in"],$dbLink2);
+		$mal_out = secureParam($params["mal_out"],$dbLink2);
+		$gambarp_in = secureParam($params["gambarp_in"],$dbLink2);
+		$gambarp_out = secureParam($params["gambarp_out"],$dbLink2);
+		$bahan_in = secureParam($params["bahan_in"],$dbLink2);
+		$bahan_out = secureParam($params["bahan_out"],$dbLink2);
+		$cat_in = secureParam($params["cat_in"],$dbLink2);
+		$cat_out = secureParam($params["cat_out"],$dbLink2);
+		$catmakara = secureParam($params["catmakara"],$dbLink2);
+		$makara_in = secureParam($params["makara_in"],$dbLink2);
+		$makara_out = secureParam($params["makara_out"],$dbLink2);
+		$noproject = secureParam($params["txtnoproyek"],$dbLink2);
+		$rangka_ga = secureParam($params["rangka_ga"],$dbLink2);
+		$packing_in = secureParam($params["packing_in"],$dbLink2);
+		$packing_out = secureParam($params["packing_out"],$dbLink2);
+		$pk_makara = secureParam($params["pk_makara"],$dbLink2);
+		$ekspedisi_in = secureParam($params["ekspedisi_in"],$dbLink2);
+		$ekspedisi_out = secureParam($params["ekspedisi_out"],$dbLink2);
+		$pemasangan_in = secureParam($params["pemasangan_in"],$dbLink2);
+		$pemasangan_out = secureParam($params["pemasangan_out"],$dbLink2);
+		$ketuatim = secureParam($params["txtketuatim"],$dbLink2);
 		if ($params["chkdp"] == 'on') {
 			$dp = 1;
 		}else{
 			$dp = 0;
 		}
-		$ket_dp = secureParam($params["ketdp"],$dbLink);
+		$ket_dp = secureParam($params["ketdp"],$dbLink2);
 		if ($params["chkt2"] == 'on') {
 			$t2 = 1;
 		}else{
 			$t2 = 0;
 		}
-		$ket_t2 = secureParam($params["kett2"],$dbLink);
+		$ket_t2 = secureParam($params["kett2"],$dbLink2);
 		if ($params["chkt3"] == 'on') {
 			$t3 = 1;
 		}else{
 			$t3 = 0;
 		}
-		$ket_t3 = secureParam($params["kett3"],$dbLink);
+		$ket_t3 = secureParam($params["kett3"],$dbLink2);
 		if ($params["chkt4"] == 'on') {
 			$t4 = 1;
 		}else{
 			$t4 = 0;
 		}
-		$ket_t4 = secureParam($params["kett4"],$dbLink);
-		$bt = secureParam($params["biayatransport"],$dbLink);
+		$ket_t4 = secureParam($params["kett4"],$dbLink2);
+		$bt = secureParam($params["biayatransport"],$dbLink2);
 		$biaya_transportasi = preg_replace("/\D/", "", $bt);
-		$bk = secureParam($params["biayakaligrafi"],$dbLink);
+		$bk = secureParam($params["biayakaligrafi"],$dbLink2);
 		$biaya_kaligrafi = preg_replace("/\D/", "", $bk);
 
-		$nospk = secureParam($params["txtnospk"],$dbLink);
-		$noproject = secureParam($params["txtnoproyek"],$dbLink);
+		$nospk = secureParam($params["txtnospk"],$dbLink2);
+		$noproject = secureParam($params["txtnoproyek"],$dbLink2);
         $pembuat = $_SESSION["my"]->id;
 		try
 		{
-			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink);
-			$result = @mysql_query('BEGIN', $dbLink);
+			$result = @mysql_query('SET AUTOCOMMIT=0', $dbLink2);
+			$result = @mysql_query('BEGIN', $dbLink2);
 			date_default_timezone_set("Asia/Jakarta");
 			$tgl = date("Y-m-d H:i:s");
 			if (!$result) {
@@ -297,7 +333,7 @@ class c_spk
 
 			$q3 = "UPDATE `aki_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."',`gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."',`cat_in`='".$cat_in."',`cat_out`='".$cat_out."',`catmakara`='".$catmakara."',`makara_in`='".$makara_in."',`makara_out`='".$makara_out."',`rangka_ga`='".$rangka_ga."',`packing_in`='".$packing_in."',`packing_out`='".$packing_out."',`pk_makara`='".$pk_makara."',`ekspedisi_in`='".$ekspedisi_in."',`ekspedisi_out`='".$ekspedisi_out."',`pemasangan_in`='".$pemasangan_in."',`pemasangan_out`='".$pemasangan_out."',`ketuatim`='".$ketuatim."',`dp`='".$dp."',`ket_dp`='".$ket_dp."',`t2`='".$t2."',`ket_t2`='".$ket_t2."',`t3`='".$t3."',`ket_t3`='".$ket_t3."',`t4`='".$t4."',`ket_t4`='".$ket_t4."',`biaya_transportasi`='".$biaya_transportasi."',`biaya_kaligrafi`='".$biaya_kaligrafi."',`kodeUser`='".$pembuat."'";
 			$q3.= " WHERE noproyek='".$noproject."'";
-			if (!mysql_query( $q3, $dbLink))
+			if (!mysql_query( $q3, $dbLink2))
 				throw new Exception('Gagal Update Proyek2. ');
 
 			@mysql_query("COMMIT", $dbLink2);

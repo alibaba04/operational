@@ -7,6 +7,7 @@
 * Author:  Olivier PLATHEY                                                     *
 *******************************************************************************/
 require_once('../config.php');
+require_once('../config2.php');
 define('FPDF_VERSION','1.82');
 //if (!defined('constant')) define('constant', '1.82');
 class FPDF
@@ -383,9 +384,9 @@ function AddPage($orientation='', $size='', $rotation=0)
 function Header()
 {
 	$this->SetMargins(10, 10, 10, true);
-    $this->image('../dist/img/cop-aki.jpg',15,12,185,30);
+    //$this->image('../dist/img/cop-aki.jpg',15,12,185,30);
     // Line break
-    $this->Ln(35);
+    //$this->Ln(35);
 }
 
 
@@ -397,7 +398,7 @@ function Footer()
     // Arial italic 8
     $this->SetFont('helvetica','I',8);
     // Page number
-    $this->SetTextColor(130);
+    /*$this->SetTextColor(130);
     $this->SetDrawColor(130);
     $this->Cell(80,2,'',0,0,'L',0);
     $this->Cell(20,5,'PIHAK I',1,0,'C',0);
@@ -405,7 +406,7 @@ function Footer()
     $this->Cell(80,2,'',0,0,'L',0);
     $this->Cell(20,10,'',1,0,'C',0);
     $this->Cell(20,10,'',1,1,'C',0);
-    $this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');
+    $this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');*/
 }
 
 function PageNo()

@@ -23,7 +23,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" ) {
 
 //Jika Mode Tambah/Add Note
     if ($_POST["txtMode"] == "edit") {
-        $pesan = $tmpkk->edit($_POST);
+        $pesan = $tmpkk->addproyek($_POST);
     }
 
 //Seharusnya semua transaksi Add dan Edit Sukses karena data sudah tervalidasi dengan javascript di form detail.
@@ -77,9 +77,9 @@ $datakcolor1 = '';
     $kota = '';$kode = '';
     $kode = substr($dataspk["nospk"],0,4);
     if (strpos($dataspk["kn"], 'KOTA') !== false){
-      $kota = substr($dataspk["kn"],5,1);
+      $kota = substr($dataspk["kn"],6,1);
     }else if(strpos($dataspk["kn"], 'KABUPATEN') !== false){
-      $kota = substr($dataspk["kn"],9,1);
+      $kota = substr($dataspk["kn"],10,1);
     }
     echo "<input type='hidden' name='txtnoproject' id='txtnoproject' value='" . $kota.$kode . "'>";
     echo "<input type='hidden' name='txtnoKk' id='txtnoKk' value='" . $dataspk["noKk"] . "'>";

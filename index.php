@@ -57,6 +57,9 @@ require_once('./function/fungsi_formatdate.php');
      <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js"></script>
      <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js"></script>
      <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+     <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+     <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+     <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
    </head>
    <?php
    if ((isset($_SESSION["my"]) === false) || (isset($_GET["page"]) === "login_detail")) {
@@ -250,6 +253,18 @@ require_once('./function/fungsi_formatdate.php');
         <script src="plugins/input-mask/jquery.inputmask.extensions.js"></script>
         <script src="plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
         <script src="plugins/toastr/toastr.min.js"></script>
+        <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+        <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+        <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+        <script src="plugins/jszip/jszip.min.js"></script>
+        <script src="plugins/pdfmake/pdfmake.min.js"></script>
+        <script src="plugins/pdfmake/vfs_fonts.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+        <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
         <script>
             var firebaseConfig = {
                 apiKey: "AIzaSyCmTZroIbWCnevV3O3vz-VMDWJaYY-hexs",
