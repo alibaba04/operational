@@ -31,7 +31,7 @@ function Row($data)
 	for($i=0;$i<count($data);$i++)
 	{
 		$w=$this->widths[$i];
-		$a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'J';
+		$a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
 		//Save the current position
 		$x=$this->GetX();
 		$y=$this->GetY();
@@ -44,6 +44,14 @@ function Row($data)
 	}
 	//Go to the next line
 	$this->Ln($h);
+}
+
+function lengthdata($data){
+	$nb=0;
+	for($i=0;$i<count($data);$i++)
+		$nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
+	$h=5*$nb;
+	return $h;
 }
 
 function CheckPageBreak($h)

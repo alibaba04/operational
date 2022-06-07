@@ -188,7 +188,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 if ($_SESSION['my']->privilege == 'SALES') {
                     $filter2 =  " AND s.kodeUser='".$_SESSION['my']->id."' ";
                 }
-                $q = "SELECT spk.*,kk.*, dkk.*,p.* FROM aki_spk spk left join aki_kk kk on spk.nokk=kk.noKk right join aki_dkk dkk on kk.noKk=dkk.noKk left join aki_proyek p on spk.noproyek=p.noproyek WHERE spk.noproyek!='-' and spk.aktif=1 GROUP by spk.noproyek ORDER BY kk.noKk desc";
+                $q = "SELECT spk.*,kk.*, dkk.*,p.* FROM aki_spk spk left join aki_kk kk on spk.nokk=kk.noKk right join aki_dkk dkk on kk.noKk=dkk.noKk left join aki_tabel_proyek p on spk.noproyek=p.noproyek WHERE spk.noproyek!='-' and spk.aktif=1 GROUP by spk.noproyek ORDER BY kk.noKk desc";
                 $rs = new MySQLPagedResultSet($q, 50, $dbLink2);
                 ?>
                 <div class="box-header">
@@ -198,36 +198,25 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     }
                     ?>
                 </div>
-                <div class="box-body">
+                <!-- <div class="box-body">
                     <div class="wrappert">
-                        <table id="example1" class="table table-bordered display nowrap" >
+                        <table id="example1" class="table table-bordered table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    <th rowspan="2">KODE</th>
-                                    <th rowspan="2">MASJID</th>
-                                    <th rowspan="2">LOKASI</th>
-                                    <th rowspan="2">TYPE</th>
-                                    <th rowspan="2">DLL</th>
-                                    <th rowspan="2">DATELINE</th>
-                                    <th rowspan="2">STATUS</th>
-                                    <th rowspan="2">RKG</th>
-                                    <th colspan="2">HLW</th>
-                                    <th rowspan="2">MAL</th>
-                                    <th rowspan="2">GMB</th>
-                                    <th rowspan="2">GAL/ENM</th>
-                                    <th colspan="2">CAT</th>
-                                    <th colspan="2">MKR</th>
-                                    <th colspan="2">PKG</th>
-                                </tr>
-                                <tr>
-                                    <th>PN</th>
-                                    <th>PL</th>
-                                    <th>PN</th>
-                                    <th>MK</th>
-                                    <th>MK</th>
-                                    <th>RG</th>
-                                    <th>PN</th>
-                                    <th>MK</th>
+                                    <th class='sticky-col first-col'>Kode Proyek</th>
+                                    <th class='sticky-col second-col'>No SPK</th> 
+                                    <th>KODE</th>
+                                    <th>No SPK</th>
+                                    <th>Customer</th>
+                                    <th>Masjid</th>
+                                    <th>Detail</th>
+                                    <th>Bahan</th>
+                                    <th>Status</th>
+                                    <th>Tgl SPK</th>
+                                    <th>Sales</th>
+                                    <!-- <th colspan='5'>Termin</th>
+                                    <th colspan='2'>Ekspedisi</th>
+                                    <th colspan='3'>Pemasangan</th> 
                                 </tr>
                             </thead>
                             <tbody>
@@ -235,91 +224,53 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 $rowCounter=1;
                                 while ($query_data = $rs->fetchArray()) {
                                     echo "<tr>";
-                                    echo "<td>" . ($query_data["noproyek"]) . "</td>";
+                                    echo "<td><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>".($query_data["noproyek"])."</a></td>";
+                                    echo "<td>" . ($query_data["nospk"]) . "</td>";
+                                    echo "<td>" . $query_data["nama_cust"] . "</td>";
                                     echo "<td>" . $query_data["masjid"] . "</td>";
-                                  
-                                    echo "<td>" . $query_data["alamat"] . "</td>";
-                                    echo "<td>" . $query_data["model"] . "</td>";
-                                    echo "<td>" . 'dll' . "</td>";
-                                    echo "<td>" . $query_data["tgl_deadline"] . "</td>";
-                                    echo "<td>" . $query_data["status"] . "</td>";
-                                    if ($query_data["rangka_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["rangka_out"]=='0000-00-00' && $query_data["rangka_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
+                                    $kel = '';
+                                    if ($query_data["plafon"] == 0){
+                                        $kel = 'Full';
+                                    }else if ($query_data["plafon"] == 1){
+                                        $kel = 'Tanpa Plafon';
                                     }else{
-                                        echo "<td></td>";
+                                        $kel = 'Waterproof';
                                     }
-                                    if ($query_data["hollow_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["hollow_out"]=='0000-00-00' && $query_data["hollow_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
+                                    $dt = '';
+                                    if ($query_data["dt"] != 0){
+                                        $dt = ', DT : '.$query_data["dt"];
                                     }
-                                    if ($query_data["hl_plafon"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["mal_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["mal_out"]=='0000-00-00' && $query_data["mal_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["gambarp_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["gambarp_out"]=='0000-00-00' && $query_data["gambarp_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    
-                                    if ($query_data["bahan_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004 ' .$query_data["bahan"]. "</td>";
-                                    }elseif ($query_data["bahan_out"]=='0000-00-00' && $query_data["bahan_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203 ' .$query_data["bahan"]. "</td>";
-                                    }else{
-                                        echo "<td>".$query_data["bahan"]."</td>";
-                                    }
-                                    if ($query_data["cat_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["cat_out"]=='0000-00-00' && $query_data["cat_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["catmakara"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["makara_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["makara_out"]=='0000-00-00' && $query_data["makara_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["rangka_ga"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["packing_out"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }elseif ($query_data["packing_out"]=='0000-00-00' && $query_data["packing_in"]!='0000-00-00') {
-                                        echo "<td style='background-color: #a6a6a6;'>" . '&#9203' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
-                                    if ($query_data["pk_makara"]!='0000-00-00') {
-                                        echo "<td style='background-color: #ff0000;'>" . '&#10004' . "</td>";
-                                    }else{
-                                        echo "<td></td>";
-                                    }
+                                    $spek = 'D : '.$query_data["d"].', T : '.$query_data["t"].$dt.', '.ucfirst($query_data["model"]).', '.ucfirst($kel).', qty : '.$query_data["jumlah"];
+                                    echo "<td>" . $spek . "</td>";
+                                    echo "<td>" . $query_data["bahan"] . "</td>";
+                                    echo "<td>" . $query_data["status_proyek"] . "</td>";
+                                    echo "<td><center>" . tgl_ind($query_data["tgl_spk"]) . "</center></td>";
+                                    echo "<td>" . $query_data["sales"] . "</td>";
+                                    /*echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt1'> Sudah T1</label></div></td>";
+                                    echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt2'> Sudah T2</label></div></td>";
+                                    echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt3'> Sudah T3</label></div></td>";
+                                    echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt4'> Sudah T4</label></div></td>";
+                                    echo "<td><div class='form-check'><label class='form-check-label' for='checkt1'> Lunas</label></div></td>";
+                                    echo '<td id="ptgl"><div class="input-group date">
+                                    <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right datepicker" id="tglEkspedisi">
+                                    </div></td>';
+                                    echo "<td><div class='form-check'><input type='text' id='driver' class='custom-control-input' placeholder='Driver'></div></td>";
+                                    echo '<td id="ptgl"><div class="input-group date">
+                                    <div class="input-group-addon" >
+                                    <label class="form-check-label">In</label> 
+                                    </div>
+                                    <input type="text" class="form-control pull-right datepicker" id="inPemasangan">
+                                    </div></td>';
+                                    echo '<td id="ptgl"><div class="input-group date">
+                                    <div class="input-group-addon">
+                                    <label class="form-check-label">Out</label>
+                                    </div>
+                                    <input type="text" class="form-control pull-right datepicker" id="outPemasangan">
+                                    </div></td>';
+                                    echo "<td><div class='form-check'><input type='text' id='ketuatim' class='custom-control-input' placeholder='Leader'/></div></td>";*/
                                     echo("</tr>");
                                     $rowCounter++;
                                 }
@@ -332,7 +283,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             </tbody>
                         </table>
                     </div>
-                </div> 
+                </div>  -->
             </div>
         </section>
     </div>

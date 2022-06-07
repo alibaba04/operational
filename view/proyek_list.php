@@ -60,8 +60,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             autoclose: true
         });
         $("#example1").DataTable({
-            "responsive": true, "lengthChange": false, "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print"]
+            "scrollX": true,
+            "buttons": ["copy", "csv", "excel"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 
@@ -88,43 +88,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     <!-- Main row -->
     <div class="row">
         <!-- Left col -->
-        <section class="col-lg-6">
-            <!-- TO DO List -->
-            <div class="box box-primary">
-                <div class="box-header">
-                    <i class="ion ion-clipboard"></i>
-                    <h3 class="box-title">Search Proyek </h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <form name="frmCariJurnalMasuk" method="GET" action="<?php echo $_SERVER['PHP_SELF']; ?>"autocomplete="off">
-                        <input type="hidden" name="page" value="<?php echo $curPage; ?>">
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" name="noSPK" id="noSPK" placeholder="Cari . . . ."
-                            <?php
-                            if (isset($_GET["noSPK"])) {
-                                echo("value='" . $_GET["noSPK"] . "'");
-                            }
-                            ?>
-                            onKeyPress="return handleEnter(this, event)">
-                            <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary btn-flat"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                        <div class="box-footer clearfix">
-                            <?php
-                            if ($hakUser==90 or $hakUser==80){
-                                ?>
-                                <a href="<?php echo $_SERVER['PHP_SELF']."?page=html/proyek_detail&mode=add";?>"><button type="button" class="btn btn-primary pull-right"><i class="fa fa-pencil-square-o"></i> Update</button></a>
-                                <?php
-                            }
-                            ?>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!-- /.box -->
-        </section>
         <section class="col-lg-6">
             <?php
             //informasi hasil input/update Sukses atau Gagal
@@ -171,90 +134,175 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     $filter2 =  " AND s.kodeUser='".$_SESSION['my']->id."' ";
                 }
             //database
-                $q = "SELECT spk.*,kk.*, dkk.* FROM aki_spk spk left join aki_kk kk on spk.nokk=kk.noKk right join aki_dkk dkk on kk.noKk=dkk.noKk WHERE spk.noproyek!='-' and spk.aktif=1 GROUP by spk.noproyek ORDER BY kk.noKk desc ";
+                 $q = "SELECT spk.*,kk.*, dkk.*,p.*,k.name as lokasi FROM aki_spk spk left join aki_kk kk on spk.nokk=kk.noKk right join aki_dkk dkk on kk.noKk=dkk.noKk left join aki_tabel_proyek p on spk.noproyek=p.noproyek left join kota k on kk.kota=k.id  WHERE spk.noproyek!='-' and spk.aktif=1 GROUP by spk.noproyek ORDER BY kk.noKk desc";
             //Paging
                 $rs = new MySQLPagedResultSet($q, 50, $dbLink2);
                 ?>
                 <div class="box-header">
                     <?php
-                    if ($_SESSION['my']->privilege == 'ADMIN') {
-                        echo '<a href="class/c_exportexcel.php?"><button class="btn btn-info pull-right"><i class="ion ion-ios-download"></i> Export Excel</button></a>';
-                    }
+                    //if ($_SESSION['my']->privilege == 'ADMIN') {
+                        echo '';
+                    //}
                     ?>
                 </div>
                 <div class="box-body">
+                    <a href="pdf/pdf_absensi.php?"><button class="btn btn-info pull-right"><i class="ion ion-ios-download"></i> PDF</button></a>
                     <div class="wrappert">
-                        <table id="example1" class="table table-bordered table-striped table-hover" >
+                        <style type="text/css">
+                            .psymbol{
+                                text-align: center;
+                            }
+                            .pdone{
+                                background-color: #ff0000;
+                            }
+                            .pprogress{
+                                background-color: #a6a6a6;
+                            }
+                        </style>
+
+                        <table id="example1" class="table table-bordered display nowrap" >
                             <thead>
                                 <tr>
-                                    <!-- <th class='sticky-col first-col'>Kode Proyek</th>
-                                    <th class='sticky-col second-col'>No SPK</th> -->
-                                    <th>KODE</th>
-                                    <th>No SPK</th>
-                                    <th>Customer</th>
-                                    <th>Masjid</th>
-                                    <th>Detail</th>
-                                    <th>Bahan</th>
-                                    <th>Status</th>
-                                    <th>Tgl SPK</th>
-                                    <th>Sales</th>
-                                    <!-- <th colspan='5'>Termin</th>
-                                    <th colspan='2'>Ekspedisi</th>
-                                    <th colspan='3'>Pemasangan</th> -->
+                                    <th rowspan="2">KODE</th>
+                                    <th rowspan="2">MASJID</th>
+                                    <th rowspan="2">LOKASI</th>
+                                    <th rowspan="2">BHN</th>
+                                    <th rowspan="2">JENIS</th>
+                                    <th rowspan="2">TYPE</th>
+                                    <th colspan="4"><center>DIMENSI</center></th>
+                                    <th rowspan="2">QTY</th>
+                                    <th rowspan="2">PLAFON</th>
+                                    <th rowspan="2">MAKARA</th>
+                                    <th rowspan="2">DLL</th>
+                                    <th rowspan="2">DATELINE</th>
+                                    <th rowspan="2">STATUS</th>
+                                    <th rowspan="2">RKG</th>
+                                    <th colspan="2"><center>HLW</center></th>
+                                    <th rowspan="2">MAL</th>
+                                    <th rowspan="2">GMB</th>
+                                    <th rowspan="2">GAL/ENM</th>
+                                    <th colspan="2"><center>CAT</center></th>
+                                    <th colspan="2"><center>MKR</center></th>
+                                    <th colspan="2"><center>PKG</center></th>
+                                </tr>
+                                <tr>
+                                    <th>D</th>
+                                    <th>DT</th>
+                                    <th>T</th>
+                                    <th>L</th>
+                                    <th>PN</th>
+                                    <th>PL</th>
+                                    <th>PN</th>
+                                    <th>MK</th>
+                                    <th>MK</th>
+                                    <th>RG</th>
+                                    <th>PN</th>
+                                    <th>MK</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $rowCounter=1;
                                 while ($query_data = $rs->fetchArray()) {
-                                    echo "<tr>";
-                                    echo "<td><a onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>".($query_data["noproyek"])."</a></td>";
-                                    echo "<td>" . ($query_data["nospk"]) . "</td>";
-                                    echo "<td>" . $query_data["nama_cust"] . "</td>";
+                                    echo "<tr onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>";
+                                    echo "<td>" . ($query_data["noproyek"]) . "</td>";
                                     echo "<td>" . $query_data["masjid"] . "</td>";
-                                    $kel = '';
-                                    if ($query_data["plafon"] == 0){
-                                        $kel = 'Full';
-                                    }else if ($query_data["plafon"] == 1){
-                                        $kel = 'Tanpa Plafon';
+                                  
+                                    echo "<td>" . $query_data["lokasi"] . "</td>";
+                                    echo "<td>" . substr($query_data['bahan'],0,1) . "</td>";
+                                    echo "<td>" . $query_data["kubah"] . "</td>";
+                                    echo "<td>" . $query_data["model"] . "</td>";
+                                    echo "<td>" . $query_data["d"] . "</td>";
+                                    echo "<td>" . $query_data["dt"] . "</td>";
+                                    echo "<td>" . $query_data["t"] . "</td>";
+                                    echo "<td>" . $query_data["luas"] . "</td>";
+                                    echo "<td>" . $query_data["jumlah"] . "</td>";
+                                    if ($query_data["plafon"]==0) {
+                                        echo "<td>Awan</td>";
                                     }else{
-                                        $kel = 'Waterproof';
+                                        echo "<td>" . $query_data["plafon"] . "</td>";
                                     }
-                                    $dt = '';
-                                    if ($query_data["dt"] != 0){
-                                        $dt = ', DT : '.$query_data["dt"];
+                                    echo "<td>" . $query_data["makara"] . "</td>";
+                                    echo "<td>" . 'dll' . "</td>";
+                                    echo "<td>" . date("d-m-Y", strtotime($query_data["tgl_deadline"])) . "</td>";
+                                    echo "<td>" . $query_data["status"] . "</td>";
+                                    if ($query_data["rangka_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["rangka_out"]=='0000-00-00' && $query_data["rangka_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
                                     }
-                                    $spek = 'D : '.$query_data["d"].', T : '.$query_data["t"].$dt.', '.ucfirst($query_data["model"]).', '.ucfirst($kel).', qty : '.$query_data["jumlah"];
-                                    echo "<td>" . $spek . "</td>";
-                                    echo "<td>" . $query_data["bahan"] . "</td>";
-                                    echo "<td>" . $query_data["status_proyek"] . "</td>";
-                                    echo "<td><center>" . tgl_ind($query_data["tgl_spk"]) . "</center></td>";
-                                    echo "<td>" . $query_data["sales"] . "</td>";
-                                    /*echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt1'> Sudah T1</label></div></td>";
-                                    echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt2'> Sudah T2</label></div></td>";
-                                    echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt3'> Sudah T3</label></div></td>";
-                                    echo "<td><div class='form-check'><input type='checkbox' id='checkt1' class='custom-control-input'/><label class='form-check-label' for='checkt4'> Sudah T4</label></div></td>";
-                                    echo "<td><div class='form-check'><label class='form-check-label' for='checkt1'> Lunas</label></div></td>";
-                                    echo '<td id="ptgl"><div class="input-group date">
-                                    <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" id="tglEkspedisi">
-                                    </div></td>';
-                                    echo "<td><div class='form-check'><input type='text' id='driver' class='custom-control-input' placeholder='Driver'></div></td>";
-                                    echo '<td id="ptgl"><div class="input-group date">
-                                    <div class="input-group-addon" >
-                                    <label class="form-check-label">In</label> 
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" id="inPemasangan">
-                                    </div></td>';
-                                    echo '<td id="ptgl"><div class="input-group date">
-                                    <div class="input-group-addon">
-                                    <label class="form-check-label">Out</label>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" id="outPemasangan">
-                                    </div></td>';
-                                    echo "<td><div class='form-check'><input type='text' id='ketuatim' class='custom-control-input' placeholder='Leader'/></div></td>";*/
+                                    if ($query_data["hollow_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["hollow_out"]=='0000-00-00' && $query_data["hollow_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["hl_plafon"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["mal_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["mal_out"]=='0000-00-00' && $query_data["mal_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["gambarp_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["gambarp_out"]=='0000-00-00' && $query_data["gambarp_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    
+                                    if ($query_data["bahan_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004 ' .$query_data["bahan"]. "</td>";
+                                    }elseif ($query_data["bahan_out"]=='0000-00-00' && $query_data["bahan_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203 ' .$query_data["bahan"]. "</td>";
+                                    }else{
+                                        echo "<td>".$query_data["bahan"]."</td>";
+                                    }
+                                    if ($query_data["cat_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["cat_out"]=='0000-00-00' && $query_data["cat_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["catmakara"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["makara_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["makara_out"]=='0000-00-00' && $query_data["makara_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["rangka_ga"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["packing_out"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }elseif ($query_data["packing_out"]=='0000-00-00' && $query_data["packing_in"]!='0000-00-00') {
+                                        echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
+                                    if ($query_data["pk_makara"]!='0000-00-00') {
+                                        echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
+                                    }else{
+                                        echo "<td></td>";
+                                    }
                                     echo("</tr>");
                                     $rowCounter++;
                                 }
@@ -268,6 +316,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                         </table>
                     </div>
                 </div> 
+                
             </div>
         </section>
     </div>

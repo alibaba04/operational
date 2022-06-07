@@ -192,12 +192,12 @@ return true;
                     <?php
                     if ($_GET["mode"] == "edit") {
                         if (isset($_GET["nospk"])){
-                            $nospk = secureParam($_GET["nospk"], $dbLink);
+                            $nospk = secureParam($_GET["nospk"], $dbLink2);
                         }else{
                             $nospk = "";
                         }
-                        $q = "SELECT * FROM `aki_proyek` WHERE md5(nospk)='".$nospk."'";
-                        $rsTemp = mysql_query($q, $dbLink);
+                        $q = "SELECT * FROM `aki_tabel_proyek` WHERE md5(nospk)='".$nospk."'";
+                        $rsTemp = mysql_query($q, $dbLink2);
                         if ($dataproyek = mysql_fetch_array($rsTemp)) {
                            $qnik = "SELECT * FROM `aki_tabel_master` WHERE nik='".$dataproyek['ketuatim']."'";
                            $rsnTemp = mysql_query($qnik, $dbLink2);
