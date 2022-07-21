@@ -217,20 +217,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         <section class="col-lg-12 connectedSortable">
             <div class="box box-primary">
                 <?php
-                
-                $filter="";$snum="";
-                if(isset($_GET["noSPK"]) ){
-                    $noSPK = secureParam($_GET["noSPK"], $dbLink);
-                    $snum = secureParam($_GET["noSPK"], $dbLink)." : ";
-                    if ($noSPK)
-                        $filter = $filter . " AND p.name LIKE '%" . $noSPK . "%'  or s.nama_cust LIKE '%" . $noSPK . "%'  or s.noSPK LIKE '%" . $noSPK . "%'  or k.name LIKE '%" . $noSPK . "%'";
-                }else{
-                    $filter = '';
-                }
-                $filter2 = '';
-                if ($_SESSION['my']->privilege == 'SALES') {
-                    $filter2 =  " AND s.kodeUser='".$_SESSION['my']->id."' ";
-                }
             //database
                  $q = "SELECT po.*,b.tgl_beli,supp.*  FROM `aki_po` po left join aki_beli b on po.nopo=b.nopo left join aki_supplier supp on po.id_supplier=supp.kodesupp WHERE po.aktif=0 order by po.id desc";
             //Paging
