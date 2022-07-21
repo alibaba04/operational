@@ -383,30 +383,22 @@ function AddPage($orientation='', $size='', $rotation=0)
 
 function Header()
 {
-	$this->SetMargins(10, 10, 10, true);
-    //$this->image('../dist/img/cop-aki.jpg',15,12,185,30);
+    //$this->image('../dist/img/hitam-logo.png',0,0,215,330);
     // Line break
-    //$this->Ln(35);
+    $this->Ln(35);
 }
 
 
 
 function Footer()
 {
-	$this->SetMargins(75, 10, 15, true);
-	$this->SetY(-33);
-    // Arial italic 8
-    $this->SetFont('helvetica','I',8);
+	$this->SetMargins(5, 10, 15, true);
+	$this->SetY(-20);
+	$this->SetFont('Calibri','I',8);
     // Page number
-    /*$this->SetTextColor(130);
-    $this->SetDrawColor(130);
-    $this->Cell(80,2,'',0,0,'L',0);
-    $this->Cell(20,5,'PIHAK I',1,0,'C',0);
-    $this->Cell(20,5,'PIHAK II',1,1,'C',0); 
-    $this->Cell(80,2,'',0,0,'L',0);
-    $this->Cell(20,10,'',1,0,'C',0);
-    $this->Cell(20,10,'',1,1,'C',0);
-    $this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');*/
+    $this->Cell(25,7,'Syarat & Ketentuan',0,1,'L',0);
+    $this->Cell(100,0.5,'',1,1,'L',0.5);
+    $this->Cell(14,5,'Halaman '.$this->PageNo(),0,0,'R');
 }
 
 function PageNo()

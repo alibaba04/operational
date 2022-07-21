@@ -48,8 +48,8 @@ class c_spk
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
-			$q = "INSERT INTO `aki_tabel_proyek`( `noproyek`, `noSpk`, `noKK`, `tanggal`, `rangka_in`, `rangka_out`, `hollow_in`, `hollow_out`, `hl_plafon`, `mal_in`, `mal_out`, `gambarp_in`, `gambarp_out`, `bahan_in`, `bahan_out`, `cat_in`, `cat_out`, `catmakara`, `makara_in`, `makara_out`, `rangka_ga`, `packing_in`, `packing_out`, `pk_makara`, `ekspedisi_in`, `ekspedisi_out`, `pemasangan_in`, `pemasangan_out`, `ketuatim`, `dp`, `ket_dp`, `t2`, `ket_t2`, `t3`, `ket_t3`, `t4`, `ket_t4`, `biaya_transportasi`, `biaya_kaligrafi`, `kodeUser`) VALUES ";
-			$q.= "('".$noproject."','".$nospk."','".$nokk."','".$tgl."','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','-',0,'-',0,'-',0,'-',0,'-',0,0,'".$pembuat."');";
+			$q = "INSERT INTO `aki_tabel_proyek`( `noproyek`, `noSpk`, `noKK`, `tanggal`,`jml_panel`, `jml_tiang`, `rangka_in`, `rangka_out`, `hollow_in`, `hollow_out`, `hl_plafon`, `mal_in`, `mal_out`, `gambarp_in`, `gambarp_out`, `bahan_in`, `bahan_out`, `cat_in`, `cat_out`, `catmakara`, `makara_in`, `makara_out`, `rangka_ga`, `packing_in`, `packing_out`, `pk_makara`, `ekspedisi_in`, `ekspedisi_out`, `pemasangan_in`, `pemasangan_out`, `ketuatim`, `dp`, `ket_dp`, `t2`, `ket_t2`, `t3`, `ket_t3`, `t4`, `ket_t4`, `biaya_transportasi`, `biaya_kaligrafi`, `kodeUser`) VALUES ";
+			$q.= "('".$noproject."','".$nospk."','".$nokk."','".$tgl."','/','/','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','0000-00-00','-',0,'-',0,'-',0,'-',0,'-',0,0,'".$pembuat."');";
 			if (!mysql_query( $q, $dbLink2))
 				throw new Exception($q.'Gagal Add Project2. ');
 
@@ -255,6 +255,8 @@ class c_spk
 		$ekspedisi_out = secureParam($params["ekspedisi_out"],$dbLink2);
 		$pemasangan_in = secureParam($params["pemasangan_in"],$dbLink2);
 		$pemasangan_out = secureParam($params["pemasangan_out"],$dbLink2);
+		$jml_panel = secureParam($params["jml_panel"],$dbLink2);
+		$jml_tiang = secureParam($params["jml_tiang"],$dbLink2);
 		$ketuatim = secureParam($params["txtketuatim"],$dbLink2);
 		if ($params["chkdp"] == 'on') {
 			$dp = 1;
@@ -298,7 +300,7 @@ class c_spk
 				throw new Exception('Could not begin transaction');
 			}
 
-			$q3 = "UPDATE `aki_tabel_proyek` SET `tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."', `gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."',`cat_in`='".$cat_in."',`cat_out`='".$cat_out."',`catmakara`='".$catmakara."',`makara_in`='".$makara_in."', `makara_out`='".$makara_out."',`rangka_ga`='".$rangka_ga."',`packing_in`='".$packing_in."',`packing_out`='".$packing_out."',`pk_makara`='".$pk_makara."',`ekspedisi_in`='".$ekspedisi_in."',`ekspedisi_out`='".$ekspedisi_out."',`pemasangan_in`='".$pemasangan_in."',`pemasangan_out`='".$pemasangan_out."',`ketuatim`='".$ketuatim."',`dp`='".$dp."',`ket_dp`='".$ket_dp."',`t2`='".$t2."',`ket_t2`='".$ket_t2."',`t3`='".$t3."',`ket_t3`='".$ket_t3."',`t4`='".$t4."',`ket_t4`='".$ket_t4."',`biaya_transportasi`='".$biaya_transportasi."',`biaya_kaligrafi`='".$biaya_kaligrafi."',`kodeUser`='".$pembuat."'";
+			$q3 = "UPDATE `aki_tabel_proyek` SET `jml_panel`='".$jml_panel."',`jml_tiang`='".$jml_tiang."',`tanggal`='".$tglTransaksi."',`rangka_in`='".$rangka_in."',`rangka_out`='".$rangka_out."',`hollow_in`='".$hollow_in."',`hollow_out`='".$hollow_out."',`hl_plafon`='".$hl_plafon."',`mal_in`='".$mal_in."',`mal_out`='".$mal_out."', `gambarp_in`='".$gambarp_in."',`gambarp_out`='".$gambarp_out."',`bahan_in`='".$bahan_in."',`bahan_out`='".$bahan_out."',`cat_in`='".$cat_in."',`cat_out`='".$cat_out."',`catmakara`='".$catmakara."',`makara_in`='".$makara_in."', `makara_out`='".$makara_out."',`rangka_ga`='".$rangka_ga."',`packing_in`='".$packing_in."',`packing_out`='".$packing_out."',`pk_makara`='".$pk_makara."',`ekspedisi_in`='".$ekspedisi_in."',`ekspedisi_out`='".$ekspedisi_out."',`pemasangan_in`='".$pemasangan_in."',`pemasangan_out`='".$pemasangan_out."',`ketuatim`='".$ketuatim."',`dp`='".$dp."',`ket_dp`='".$ket_dp."',`t2`='".$t2."',`ket_t2`='".$ket_t2."',`t3`='".$t3."',`ket_t3`='".$ket_t3."',`t4`='".$t4."',`ket_t4`='".$ket_t4."',`biaya_transportasi`='".$biaya_transportasi."',`biaya_kaligrafi`='".$biaya_kaligrafi."',`kodeUser`='".$pembuat."'";
 			$q3.= " WHERE noproyek='".$noproject."'";
 			if (!mysql_query( $q3, $dbLink2))
 				throw new Exception($q3.'Gagal Update Proyek2. ');

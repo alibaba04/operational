@@ -107,7 +107,7 @@ return true;
     <section class="content">
         <!-- Main row -->
         <div class="row">
-            <section class="col-lg-8">
+            <section class="col-lg-6">
                 <div class="box box-primary">
                     <div class="box-header">
                         <i class="ion ion-clipboard"></i>
@@ -170,17 +170,12 @@ return true;
                                  <input type="phone" name="txtphone" id="txtphone" class="form-control" data-inputmask='"mask": "9999 9999 99999"' data-mask value="<?php echo $dataspk['no_phone']; ?>" >
                             </div>
                         </div>
-                        <div class="form-group" >
-                            <div class="col-lg-8" style="padding-left: 0px;">
-                                <label class="control-label" for="txtTglTransaksi">Sales</label>
-                                <input name="txtsales" id="txtsales" class="form-control" value="<?php echo $dataspk['sales']; ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>    
             </section>
-            <section class="col-lg-12">
-                <div class="box box-primary collapsed-box">
+            <section class="col-lg-6">
+                <div class="box box-primary">
                     <div class="box-header">
                         <i class="ion ion-clipboard"></i>
                         <h3 class="box-title">Termin</h3>
@@ -209,7 +204,7 @@ return true;
                     } 
                     ?>
                     <div class="box-body">
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label" for="txtjpekerjaan">DP</label>
                                 <div class="input-group">
@@ -225,24 +220,6 @@ return true;
                                     <input type="text" value="<?php echo $dataproyek['ket_dp']; ?>" class="form-control" name="ketdp" id="ketdp">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label class="control-label" for="txtT2">T2</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <?php
-                                            $chk='';
-                                            if ($dataproyek['t2']==1) {
-                                                $chk = "checked";
-                                            }
-                                            echo '<input type="checkbox" name="chkt2" id="chkt2" '.$chk.'>';
-                                        ?></span>
-                                    <input type="text" value="<?php echo $dataproyek['ket_t2']; ?>" name="kett2" id="kett2" class="form-control" >
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
                             <div class="form-group">
                                 <label class="control-label" for="txtT3">T3</label>
                                 <div class="input-group">
@@ -259,7 +236,21 @@ return true;
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label" for="txtT2">T2</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <?php
+                                            $chk='';
+                                            if ($dataproyek['t2']==1) {
+                                                $chk = "checked";
+                                            }
+                                            echo '<input type="checkbox" name="chkt2" id="chkt2" '.$chk.'>';
+                                        ?></span>
+                                    <input type="text" value="<?php echo $dataproyek['ket_t2']; ?>" name="kett2" id="kett2" class="form-control" >
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="control-label" for="txtT4">T4</label>
                                 <div class="input-group">
@@ -294,6 +285,12 @@ return true;
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group" >
+                            <div class="col-lg-8" style="padding-left: 0px;">
+                                <label class="control-label" for="txtTglTransaksi">Sales</label>
+                                <input name="txtsales" id="txtsales" class="form-control" value="<?php echo $dataspk['sales']; ?>" placeholder="Empty" onKeyPress="return handleEnter(this, event)">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -308,6 +305,16 @@ return true;
                         </div>
                     </div>
                     <div class="box-body">
+                        <div class="col-lg-8">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Jumlah Panel</span>
+                                    <input type="text" name="jml_panel" id="jml_panel" class="form-control" value="<?php if($dataproyek['jml_panel']!=''){echo $dataproyek['jml_panel'];} ?>">
+                                    <span class="input-group-addon">RING/TIANG</span>
+                                    <input type="text" name="jml_tiang" id="jml_tiang" class="form-control" value="<?php if($dataproyek['jml_tiang']!=''){echo $dataproyek['jml_tiang'];} ?>">
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="control-label" for="rangka_in">Rangka</label>
@@ -398,6 +405,11 @@ return true;
                                         $sql_nik = mysql_query($qnik,$dbLink3);
                                         $selected = "";
                                         if ($_GET['mode'] == 'edit') {
+                                            $qnik = 'SELECT * FROM `aki_tabel_master` WHERE tanggal_nonaktif="0000-00-00"';
+                                            $sql_nik = mysql_query($qnik,$dbLink3);
+                                            if ($rs_nik = mysql_fetch_assoc($sql_nik)) {
+                                                # code...
+                                            }
                                             if ($dataproyek['ketuatim']=='') {
                                                 echo '<option value="'.$dataproyek["ketuatim"].'" selected>'.$dataproyek['ketuatim'].' - '.$datanik['kname'].'</option>';
                                             }else{

@@ -393,19 +393,9 @@ function Header()
 function Footer()
 {
 	$this->SetMargins(75, 10, 15, true);
-	$this->SetY(-33);
+	$this->SetY(5);
     // Arial italic 8
-    $this->SetFont('helvetica','I',8);
-    // Page number
-    /*$this->SetTextColor(130);
-    $this->SetDrawColor(130);
-    $this->Cell(80,2,'',0,0,'L',0);
-    $this->Cell(20,5,'PIHAK I',1,0,'C',0);
-    $this->Cell(20,5,'PIHAK II',1,1,'C',0); 
-    $this->Cell(80,2,'',0,0,'L',0);
-    $this->Cell(20,10,'',1,0,'C',0);
-    $this->Cell(20,10,'',1,1,'C',0);*/
-    $this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');
+        $this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');
 }
 
 function PageNo()

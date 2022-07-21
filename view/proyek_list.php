@@ -2,10 +2,10 @@
 //=======  : Alibaba
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined('validSession') or die('Restricted access');
-$curPage = "view/SPK_list";
+$curPage = "view/proyek_list";
 
 //Periksa hak user pada modul/menu ini
-$judulMenu = 'SPK';
+$judulMenu = 'Proyek';
 $hakUser = getUserPrivilege($curPage);
 
 if ($hakUser < 10) {
@@ -170,12 +170,13 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <th rowspan="2">JENIS</th>
                                     <th rowspan="2">TYPE</th>
                                     <th colspan="4"><center>DIMENSI</center></th>
+                                    <th rowspan="2">JUMLAH<br>PANEL</th>
+                                    <th rowspan="2">RING/TIANG</th>
                                     <th rowspan="2">QTY</th>
                                     <th rowspan="2">PLAFON</th>
                                     <th rowspan="2">MAKARA</th>
                                     <th rowspan="2">DLL</th>
                                     <th rowspan="2">DATELINE</th>
-                                    <th rowspan="2">STATUS</th>
                                     <th rowspan="2">RKG</th>
                                     <th colspan="2"><center>HLW</center></th>
                                     <th rowspan="2">MAL</th>
@@ -184,6 +185,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <th colspan="2"><center>CAT</center></th>
                                     <th colspan="2"><center>MKR</center></th>
                                     <th colspan="2"><center>PKG</center></th>
+                                    <th rowspan="2">STATUS</th>
                                 </tr>
                                 <tr>
                                     <th>D</th>
@@ -204,10 +206,17 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 <?php
                                 $rowCounter=1;
                                 while ($query_data = $rs->fetchArray()) {
-                                    echo "<tr onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>";
+                                    $status='';
+                                    echo "<tr ";
+                                    if ($query_data["kproyek"]=='patas') {
+                                        echo "style='background-color: #ffff00;'";
+                                    }
+                                    if ($query_data["pk_makara"]!='0000-00-00' && $query_data["ekspedisi_out"]=='0000-00-00') {
+                                        echo "style='background-color: #8ea9db;'";
+                                    }
+                                    echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/po_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>";
                                     echo "<td>" . ($query_data["noproyek"]) . "</td>";
                                     echo "<td>" . $query_data["masjid"] . "</td>";
-                                  
                                     echo "<td>" . $query_data["lokasi"] . "</td>";
                                     echo "<td>" . substr($query_data['bahan'],0,1) . "</td>";
                                     echo "<td>" . $query_data["kubah"] . "</td>";
@@ -216,6 +225,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     echo "<td>" . $query_data["dt"] . "</td>";
                                     echo "<td>" . $query_data["t"] . "</td>";
                                     echo "<td>" . $query_data["luas"] . "</td>";
+                                    echo "<td>" . $query_data["jml_panel"] . "</td>";
+                                    echo "<td>" . $query_data["jml_tiang"] . "</td>";
                                     echo "<td>" . $query_data["jumlah"] . "</td>";
                                     if ($query_data["plafon"]==0) {
                                         echo "<td>Awan</td>";
@@ -225,84 +236,114 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     echo "<td>" . $query_data["makara"] . "</td>";
                                     echo "<td>" . 'dll' . "</td>";
                                     echo "<td>" . date("d-m-Y", strtotime($query_data["tgl_deadline"])) . "</td>";
-                                    echo "<td>" . $query_data["status"] . "</td>";
                                     if ($query_data["rangka_out"]!='0000-00-00') {
+                                        $status='Rangka '. '&#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["rangka_out"]=='0000-00-00' && $query_data["rangka_in"]!='0000-00-00') {
+                                        $status='Rangka '. '&#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["hollow_out"]!='0000-00-00') {
+                                        $status='Hollow '. '&#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["hollow_out"]=='0000-00-00' && $query_data["hollow_in"]!='0000-00-00') {
+                                        $status='Hollow '. '&#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["hl_plafon"]!='0000-00-00') {
+                                        $status='Hollow Plafon '. '&#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["mal_out"]!='0000-00-00') {
+                                        $status='Mal '. '&#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["mal_out"]=='0000-00-00' && $query_data["mal_in"]!='0000-00-00') {
+                                        $status='Mal '. '&#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["gambarp_out"]!='0000-00-00') {
+                                        $status='Gambar Panel '. '&#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["gambarp_out"]=='0000-00-00' && $query_data["gambarp_in"]!='0000-00-00') {
+                                        $status='Gambar Panel '. '&#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     
                                     if ($query_data["bahan_out"]!='0000-00-00') {
+                                        $status=$query_data["bahan"]. ' &#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004 ' .$query_data["bahan"]. "</td>";
                                     }elseif ($query_data["bahan_out"]=='0000-00-00' && $query_data["bahan_in"]!='0000-00-00') {
+                                        $status=$query_data["bahan"]. ' &#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203 ' .$query_data["bahan"]. "</td>";
                                     }else{
                                         echo "<td>".$query_data["bahan"]."</td>";
                                     }
                                     if ($query_data["cat_out"]!='0000-00-00') {
+                                        $status='Cat '. ' &#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["cat_out"]=='0000-00-00' && $query_data["cat_in"]!='0000-00-00') {
+                                        $status='Cat '. ' &#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["catmakara"]!='0000-00-00') {
+                                        $status='Cat '. ' &#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["makara_out"]!='0000-00-00') {
+                                        $status='Makara '. ' &#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["makara_out"]=='0000-00-00' && $query_data["makara_in"]!='0000-00-00') {
+                                        $status='Makara '. ' &#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["rangka_ga"]!='0000-00-00') {
+                                        $status='RG '. ' &#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["packing_out"]!='0000-00-00') {
+                                        $status='Packing '. ' &#10004';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }elseif ($query_data["packing_out"]=='0000-00-00' && $query_data["packing_in"]!='0000-00-00') {
+                                        $status='Packing '. ' &#9203';
                                         echo "<td class='psymbol pprogress'>" . '&#9203' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
                                     if ($query_data["pk_makara"]!='0000-00-00') {
+                                        $status='Siap Kirim';
                                         echo "<td class='psymbol pdone'>" . '&#10004' . "</td>";
                                     }else{
                                         echo "<td></td>";
                                     }
+                                    if ($query_data["ekspedisi_out"]!='0000-00-00') {
+                                        $status='Pengiriman'. ' &#10004';
+                                    }elseif ($query_data["ekspedisi_out"]=='0000-00-00' && $query_data["ekspedisi_in"]!='0000-00-00') {
+                                        $status='Pengiriman '. ' &#9203';
+                                    }
+                                    if ($query_data["pemasangan_out"]!='0000-00-00') {
+                                        $status='Pemasangan'. ' &#10004';
+                                    }elseif ($query_data["pemasangan_out"]=='0000-00-00' && $query_data["pemasangan_in"]!='0000-00-00') {
+                                        $status='Pemasangan'. ' &#9203';
+                                    }
+                                    echo "<td>" . $status . "</td>";
                                     echo("</tr>");
                                     $rowCounter++;
                                 }

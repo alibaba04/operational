@@ -77,7 +77,7 @@ $datakcolor1 = '';
     $kota = '';$kode = '';
     $kode = substr($dataspk["nospk"],0,4);
     if (strpos($dataspk["kn"], 'KOTA') !== false){
-      $kota = substr($dataspk["kn"],6,1);
+      $kota = substr($dataspk["kn"],5,1);
     }else if(strpos($dataspk["kn"], 'KABUPATEN') !== false){
       $kota = substr($dataspk["kn"],10,1);
     }

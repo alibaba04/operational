@@ -6,7 +6,7 @@ define('validSession', 1);
 if (!file_exists('config.php')) {
     exit();
 }
-require_once( 'config3.php' );require_once( 'config2.php' );require_once( 'config.php' );
+require_once( 'config.php' );require_once( 'config3.php' );require_once( 'config2.php' );
 require_once('./class/c_user.php');
 session_name("alibaba");
 session_start();
