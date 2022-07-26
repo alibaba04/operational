@@ -135,7 +135,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         });
         $("#example1").DataTable({
             responsive: true,
-            "autoWidth": false,
             "scrollX": true,
             "buttons": ["copy", "csv", "excel"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
@@ -238,7 +237,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             }
                         </style>
 
-                        <table id="example1" class="table table-bordered display nowrap" >
+                        <table id="example1" class="table table-bordered display nowrap" width="100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -248,7 +247,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <th>Total Harga</th>
                                     <th>Tanggal PO</th>
                                     <th>Tanggal Beli</th>
-                                    <th>Pengirim</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -261,10 +259,9 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     echo "<td>" . $query_data["nopo"] . "</td>";
                                     echo "<td>" . $query_data["cust"] . "</td>";
                                     echo "<td>" . $query_data["supplier"] . "</td>";
-                                    echo "<td>" . $query_data["totalharga"] . "</td>";
+                                    echo "<td>" . number_format($query_data["totalharga"]) . "</td>";
                                     echo "<td>" . $query_data["tgl_po"] . "</td>";
                                     echo "<td>" . $query_data["tgl_beli"] . "</td>";
-                                    echo "<td>" . $query_data["pengirim"] . "</td>";
                                     echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
                                     echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data PO ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
                                     echo "<a class='btn btn-default btn-sm pull-right' href='pdf/pdf_po.php?&nopo=" . md5($query_data["nopo"])."' style='cursor:pointer;'><i class='fa fa-fw fa-print'></i></a>";
@@ -298,7 +295,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 
             </div>
             <div class="modal-body">
-              <table id="example2" class="table table-bordered table-hover dataTable dtr-inline" >
+              <table id="example2" class="table table-bordered table-hover dataTable dtr-inline"width="100%" >
                 <thead>
                   <tr>
                     <th>id</th>
@@ -315,7 +312,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 </thead>
                 <tbody>
                   <?php
-                  $q = "SELECT * FROM `aki_barang` b left join aki_dbeli db on b.kode=db.kode_barang group by b.kode";
+                  $q = "SELECT b.*,db.*,bl.tgl_beli,sum(qty) as stok FROM `aki_barang` b left join aki_dbeli db on b.kode=db.kode_barang left join aki_beli bl on db.nobeli=bl.nobeli group by b.kode";
                   $rs = new MySQLPagedResultSet($q, 50, $dbLink);
                   $rowCounter=1;
                   while ($query_data = $rs->fetchArray()) {
@@ -323,7 +320,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     echo "<td>" . $query_data["id"] ."</td>";
                     echo '<td onclick=editbrg("'.$query_data["kode"].'")>'. $query_data["kode"] .'</td>';
                     echo "<td>" . $query_data["nama"] ."</td>";
-                    echo "<td>" . strtoupper($query_data["astok"]) . "</td>";
+                    echo "<td>" . strtoupper($query_data["astok"]+$query_data["stok"]) . "</td>";
                     echo "<td>" . $query_data["satuan"] ."</td>";
                     echo "<td>" . $query_data["golongan"] ."</td>";
                     echo "<td>" . $query_data["jenis"] ."</td>";
@@ -361,7 +358,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <h4 class="modal-title">List Supplier <label id="labelclr"></label></h4>
             </div>
             <div class="modal-body">
-              <table id="example3" class="table table-bordered table-hover dataTable dtr-inline" >
+              <table id="example3" class="table table-bordered table-hover dataTable dtr-inline" width="100%">
                 <thead>
                   <tr>
                     <th>id</th>
