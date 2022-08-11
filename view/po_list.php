@@ -43,6 +43,18 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     if ($_GET["txtMode"] == "Delete") {
         $pesan = $tmppo->delete($_GET["nopo"]);
     }
+    if ($_GET["txtMode"] == "Accop") {
+        $pesan = $tmppo->accop($_GET["nopo"]);
+    }
+    if ($_GET["txtMode"] == "Cancelop") {
+        $pesan = $tmppo->cancelop($_GET["nopo"]);
+    }
+    if ($_GET["txtMode"] == "Accfa") {
+        $pesan = $tmppo->accfa($_GET["nopo"]);
+    }
+    if ($_GET["txtMode"] == "Cancelfa") {
+        $pesan = $tmppo->cancelfa($_GET["nopo"]);
+    }
 
 //Seharusnya semua transaksi Add dan Edit Sukses karena data sudah tervalidasi dengan javascript di form detail.
 //Jika masih ada masalah, berarti ada exception/masalah yang belum teridentifikasi dan harus segera diperbaiki!
@@ -247,6 +259,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <th>Total Harga</th>
                                     <th>Tanggal PO</th>
                                     <th>Tanggal Beli</th>
+                                    <th>Acc OP</th>
+                                    <th>Acc FA</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -256,15 +270,49 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 while ($query_data = $rs->fetchArray()) {
                                     echo "<tr>";
                                     echo "<td>" . $rowCounter . "</td>";
-                                    echo "<td>" . $query_data["nopo"] . "</td>";
+                                    echo "<td><a class='btn btn-default btn-sm pull-right' href='pdf/pdf_po.php?&nopo=" . md5($query_data["nopo"])."' style='cursor:pointer;'>" . $query_data["nopo"] . "</a></td>";
                                     echo "<td>" . $query_data["cust"] . "</td>";
                                     echo "<td>" . $query_data["supplier"] . "</td>";
                                     echo "<td>" . number_format($query_data["totalharga"]) . "</td>";
-                                    echo "<td>" . $query_data["tgl_po"] . "</td>";
-                                    echo "<td>" . $query_data["tgl_beli"] . "</td>";
+                                    echo "<td>" . date('d/m/Y', strtotime($query_data["tgl_po"])) . "</td>";
+                                    echo "<td>" ; if (isset($query_data["tgl_beli"])) {
+                                        echo date('d/m/Y', strtotime($query_data["tgl_beli"])) . "</td>";
+                                    }
+                                    
+                                    if ($_SESSION["my"]->privilege=='koperational' || $_SESSION["my"]->privilege=='GODMODE' ) {
+                                        echo "<td><center>";
+                                        if ($query_data["acc_op"]==1) {
+                                            echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Cancel Permohonan Belanja? ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Cancelop&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-check'></a>";
+                                        }else{
+                                            echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Approve Permohonan Belanja? ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Accop&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'></a>";
+                                        }
+                                        echo "</center></td>";
+                                    }else{
+                                        echo "<td><center>";
+                                        if ($query_data["acc_op"]==1) {
+                                            echo "<i class='fa fa-fw fa-check'>";
+                                        }
+                                        echo "</center></td>";
+                                    }
+                                    
+                                    if ($_SESSION["my"]->privilege=='kfinance' || $_SESSION["my"]->privilege=='GODMODE' ) {
+                                        echo "<td><center>";
+                                        if ($query_data["acc_fa"]==1) {
+                                            echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Cancel Permohonan Belanja? ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Cancelfa&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-check'></a>";
+                                        }else{
+                                            echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Approve Permohonan Belanja? ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Accfa&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'></a>";
+                                        }
+                                        echo "</center></td>";
+                                    }else{
+                                        echo "<td><center>";
+                                        if ($query_data["acc_fa"]==1) {
+                                            echo "<i class='fa fa-fw fa-check'>";
+                                        }
+                                        echo "</center></td>";
+                                    }
+                                    
                                     echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
                                     echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data PO ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
-                                    echo "<a class='btn btn-default btn-sm pull-right' href='pdf/pdf_po.php?&nopo=" . md5($query_data["nopo"])."' style='cursor:pointer;'><i class='fa fa-fw fa-print'></i></a>";
                                     echo "</tr>";
                                     $rowCounter++;
                                 }

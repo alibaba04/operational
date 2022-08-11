@@ -38,6 +38,25 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 }
 ?>
 <script>
+    $(document).ready(function () {
+        $("#txtjbrg").click(function(){
+            var x = document.getElementById("txtjbrg").value;
+            var y = document.getElementById("idsupp");
+            if (x == 'penunjang') {
+                y.style.display = "none";
+            } else {
+                y.style.display = "block";
+            }
+        });
+    });
+    /*function sjbarang(){
+        var x = document.getElementById("txtjbrg").value;
+        if (x=='penunjang') {
+            $("select").removeClass("select2");
+            /*const y = document.getElementById("idsupp");
+            y.remove();
+        }
+    }*/
     $(function () {
         $("[data-mask]").inputmask();
         $(".select2").select2();
@@ -89,7 +108,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 
     function addJurnal(){    
         tcounter = $("#jumAddPo").val();
-        kodeb(tcounter);
+        
         var ttable = document.getElementById("kendali");
         var trow = document.createElement("TR");
         trow.setAttribute("id", "trid_"+tcounter);
@@ -99,15 +118,24 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         td.setAttribute("align","center");
         td.setAttribute('onclick','chkadddetail('+tcounter+');');
         td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /></div>';
+        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /><input  type="hidden" name="txtjbrg_'+tcounter+'" id="txtjbrg_'+tcounter+'" value="'+$("#txtjbrg").val()+'"></div>';
         trow.appendChild(td);
 
         //Kolom 2 Barang 
-        var td = document.createElement("TD");
-        td.setAttribute("align","left");
-        td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
-        trow.appendChild(td);
+        if ($("#txtjbrg").val() == 'penunjang') {
+            var td = document.createElement("TD");
+            td.setAttribute("align","left");
+            td.style.verticalAlign = 'top';
+            td.innerHTML+='<div class="form-group"><input name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'" class="form-control" style="text-align:left" required></div>';
+            trow.appendChild(td);
+        }else{
+            kodeb(tcounter);
+            var td = document.createElement("TD");
+            td.setAttribute("align","left");
+            td.style.verticalAlign = 'top';
+            td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
+            trow.appendChild(td);
+        }
 
         //Kolom 3 Qty
         var td = document.createElement("TD");
@@ -185,12 +213,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 echo "<input type='hidden' name='nopo' value='" . $dataPo["nopo"] . "'>";
                             }
                         }else{
-                            $q = "SELECT max(nopo) as nopo FROM `aki_po`";
+                            $q = "SELECT * FROM aki_po where id=( SELECT max(id) FROM aki_po )";
                             $rsTemp = mysql_query($q, $dbLink);
                             $tglpo = date("dmy");
                             if ($kode_ = mysql_fetch_array($rsTemp)) {
                                 $urut = "";
-                                $noPo = "";
+                                $newnoPo = "";
                                 if ($kode_['nopo'] != ''){
                                     $urut = substr($kode_['nopo'],-4);
                                     $kode = $urut + 1;
@@ -201,21 +229,32 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     }else if (strlen($kode)==3){
                                         $kode = '0'.$kode;
                                     }
-                                    $noPo = 'POPTAKI'.$tglpo.$kode;
+                                    $newnoPo = 'POPTAKI'.$tglpo.$kode;
                                 }else{
-                                    $noPo = 'POPTAKI'.$tglpo.'0001';
+                                    $newnoPo = 'POPTAKI'.$tglpo.'0001';
                                 }
                             }else{
-                                $noPo = 'POPTAKI'.$tglpo.'0001';
+                                $newnoPo = 'POPTAKI'.$tglpo.'0001';
                             }
                         }
 
                         ?>
-                        <input name="txtnopo" id="txtnopo" maxlength="30" class="form-control" readonly value="<?php if($_GET["mode"]=='edit'){ echo $noPo; }else{echo $noPo;}?>">
+                        <input name="txtnopo" id="txtnopo" maxlength="30" class="form-control" readonly value="<?php if($_GET["mode"]=='edit'){ echo $noPo; }else{echo $newnoPo;}?>">
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="" style="padding-bottom: 10px;padding-right: 0px;padding-left: 5px;">
+                    <div class="input-group ">
+                        <div class="input-group-addon">
+                            <label class="control-label" for="txtjbrg">Barang</label>
+                        </div>
+                        <select class="form-control" name="txtjbrg" id="txtjbrg">
+                            <option value="persediaan">Persedian Produksi</option>
+                            <option value="penunjang">Penunjang</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="lsupp" style="padding-bottom: 10px;padding-right: 0px;padding-left: 5px;">
                         <select class="form-control select2" name="idsupp" id="idsupp">
                             <?php
                             $q = 'SELECT * FROM `aki_supplier`';
@@ -296,13 +335,19 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 echo "<tr id='trid_".$iPO."'>";
                                 echo '<td align="center" valign="top"><div class="form-group">
                                 <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
+                                echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                 $q = "SELECT * FROM `aki_barang`";
                                 $listbrg = mysql_query($q, $dbLink);
-                                echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
-                                <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
-                                while ($dbrg = mysql_fetch_array($listbrg)) {
-                                    echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                                if ($dpolist["jbarang"] == 'penunjang') {
+                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["id_barang"]. '"style="text-align:left"/></div></td>';
+                                }else{
+                                    echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
+                                    <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
+                                    while ($dbrg = mysql_fetch_array($listbrg)) {
+                                        echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                                    }
                                 }
+                                
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"></div></td>';
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right"/></div></td>';
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  onfocusout="subtotal(' . $iPO . ')"class="form-control" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right"/></div></td>';

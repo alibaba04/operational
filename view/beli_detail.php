@@ -113,15 +113,24 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         td.setAttribute("align","center");
         td.setAttribute('onclick','chkadddetail('+tcounter+');');
         td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /></div>';
+        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /><input  type="hidden" name="txtjbrg_'+tcounter+'" id="txtjbrg_'+tcounter+'" value="'+$("#txtjbrg").val()+'"></div>';
         trow.appendChild(td);
 
         //Kolom 2 Barang 
-        var td = document.createElement("TD");
-        td.setAttribute("align","left");
-        td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
-        trow.appendChild(td);
+        if ($("#txtjbrg").val() == 'penunjang') {
+            var td = document.createElement("TD");
+            td.setAttribute("align","left");
+            td.style.verticalAlign = 'top';
+            td.innerHTML+='<div class="form-group"><input name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'" class="form-control" style="text-align:left" required></div>';
+            trow.appendChild(td);
+        }else{
+            kodeb(tcounter);
+            var td = document.createElement("TD");
+            td.setAttribute("align","left");
+            td.style.verticalAlign = 'top';
+            td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
+            trow.appendChild(td);
+        }
 
         //Kolom 3 Qty
         var td = document.createElement("TD");
@@ -215,8 +224,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             if ($kode_ = mysql_fetch_array($rsTemp)) {
                                 $urut = "";
                                 $noPo = "";
-                                if ($kode_['nopo'] != ''){
-                                    $urut = substr($kode_['nopo'],-4);
+                                if ($kode_['nobeli'] != ''){
+                                    $urut = substr($kode_['nobeli'],-4);
                                     $kode = $urut + 1;
                                     if (strlen($kode)==1) {
                                         $kode = '000'.$kode;
@@ -244,6 +253,17 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             <label class="control-label" for="txtnopo">No Po</label>
                         </div>
                         <input name="txtnopo" id="txtnopo" maxlength="30" class="form-control" readonly value="<?php if($_GET["mode"]=='edit'){ echo $dataOrder['nopo']; }else{echo $dataPo["nopo"];}?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group ">
+                        <div class="input-group-addon">
+                            <label class="control-label" for="txtjbrg">Barang</label>
+                        </div>
+                        <select class="form-control" name="txtjbrg" id="txtjbrg">
+                            <option value="persediaan">Persedian Produksi</option>
+                            <option value="penunjang">Penunjang</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -333,7 +353,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     <tbody id="kendali">
                         <?php
                         if ($_GET['mode']=='edit'){
-                            $q = "SELECT * FROM aki_dbeli db left join aki_barang ba on db.kode_barang=ba.kode WHERE md5(db.nobeli)='".$nobeli."' order by db.id asc";
+                            $q = "SELECT db.*,ba.kode,ba.nama FROM aki_dbeli db left join aki_barang ba on db.kode_barang=ba.kode WHERE md5(db.nobeli)='".$nobeli."' order by db.id asc";
                             $rsdpolist = mysql_query($q, $dbLink);
                             $iPO = 0;
                             while ($dpolist = mysql_fetch_array($rsdpolist)) {
@@ -341,13 +361,19 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 echo "<tr id='trid_".$iPO."'>";
                                 echo '<td align="center" valign="top"><div class="form-group">
                                 <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
-                                $q = "SELECT * FROM `aki_barang`";
-                                $listbrg = mysql_query($q, $dbLink);
-                                echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
-                                <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
-                                while ($dbrg = mysql_fetch_array($listbrg)) {
-                                    echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                                echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
+                                if ($dpolist["jbarang"] == 'penunjang') {
+                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/></div></td>';
+                                }else{
+                                    $q = "SELECT * FROM `aki_barang`";
+                                    $listbrg = mysql_query($q, $dbLink);
+                                    echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
+                                    <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
+                                    while ($dbrg = mysql_fetch_array($listbrg)) {
+                                        echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                                    }
                                 }
+                                
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"></div></td>';
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right"/></div></td>';
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  onfocusout="subtotal(' . $iPO . ')"class="form-control" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right"/></div></td>';
@@ -365,12 +391,17 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     echo "<tr id='trid_".$iPO."'>";
                                     echo '<td align="center" valign="top"><div class="form-group">
                                     <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
-                                    $q = "SELECT * FROM `aki_barang`";
-                                    $listbrg = mysql_query($q, $dbLink);
-                                    echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
-                                    <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
-                                    while ($dbrg = mysql_fetch_array($listbrg)) {
-                                        echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                                    echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
+                                    if ($dpolist["jbarang"] == 'penunjang') {
+                                        echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["id_barang"]. '"style="text-align:left"/></div></td>';
+                                    }else{
+                                        $q = "SELECT * FROM `aki_barang`";
+                                        $listbrg = mysql_query($q, $dbLink);
+                                        echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
+                                        <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
+                                        while ($dbrg = mysql_fetch_array($listbrg)) {
+                                            echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                                        }
                                     }
                                     echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"></div></td>';
                                     echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right"/></div></td>';
@@ -410,7 +441,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <div class="modal-body">
                     <div class="form-group">
                         <?php  
-                        $q = 'SELECT * FROM `aki_po` WHERE aktif=0 ORDER BY id desc';
+                        $q = 'SELECT * FROM `aki_po` WHERE aktif=0 and acc_op="1" and acc_fa="1" ORDER BY id desc';
                         $sql_po = mysql_query($q,$dbLink);
                         ?>
                         <select class="form-control select2" name="snopo" id="snopo" style="width: 100%">

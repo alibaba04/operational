@@ -85,7 +85,12 @@
     $total=0;
     while ($query_data = mysql_fetch_array($rs2)) {
         $pdf->Cell(8,7,$jml,1,0,'C',0);
-        $pdf->Cell(75,7, ucfirst($query_data["nama"]),1,0,'L',0);
+        if ($query_data["jbarang"] == 'penunjang') {
+            $pdf->Cell(75,7, ucfirst($query_data["id_barang"]),1,0,'L',0);
+        }else{
+            $pdf->Cell(75,7, ucfirst($query_data["nama"]),1,0,'L',0);
+        }
+        
         $pdf->Cell(15,7,$query_data["qty"],1,0,'C',0);
         $pdf->Cell(18,7,'0 %',1,0,'C',0);
         $pdf->Cell(18,7,'-',1,0,'C',0);
@@ -94,8 +99,8 @@
         $jml++;
         $total+=$query_data["subtotal"];
     }
-    if ($jml<5) {
-        for ($jml; $jml <= 5; $jml++) { 
+    if ($jml<8) {
+        for ($jml; $jml <= 8; $jml++) { 
             $pdf->Cell(8,7,'',1,0,'C',0);
             $pdf->Cell(75,7, '',1,0,'L',0);
             $pdf->Cell(15,7,'',1,0,'C',0);

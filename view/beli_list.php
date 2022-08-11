@@ -75,7 +75,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     <ol class="breadcrumb">
         <li><a href="index.php"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Input</li>
-        <li class="active">PO</li>
+        <li class="active">Order</li>
     </ol>
 </section>
 
@@ -93,7 +93,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                           <?php
                           echo '<button type="button" id="btnpo" class="btn btn-primary btn-flat"';
                            echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/beli_detail&mode=add'>";
-                          echo '<i class="fa fa-plus"> </i> PO</button>';
+                          echo '<i class="fa fa-plus"> </i> Order</button>';
                           ?>
                         </span>
                     </div></center>
@@ -135,7 +135,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             <div class="box box-primary">
                 <?php
             //database
-                 $q = "SELECT b.*,supp.*,po.cust FROM `aki_beli` b left join aki_supplier supp on b.id_supplier=supp.kodesupp left join aki_po po on b.nopo=po.nopo WHERE b.aktif=0 order by b.id desc";
+                 $q = "SELECT b.*,supp.* FROM `aki_beli` b left join aki_supplier supp on b.id_supplier=supp.kodesupp left join aki_po po on b.nopo=po.nopo WHERE b.aktif=0 order by b.id desc";
             //Paging
                 $rs = new MySQLPagedResultSet($q, 50, $dbLink);
                 ?>
@@ -160,6 +160,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 <tr>
                                     <th>No</th>
                                     <th>No Order</th>
+                                    <th>Jenis</th>
                                     <th>Tanggal Beli</th>
                                     <th>Pemohon</th>
                                     <th>Supplier</th>
@@ -174,13 +175,13 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     echo "<tr>";
                                     echo "<td>" . $rowCounter . "</td>";
                                     echo "<td>" . $query_data["nobeli"] . "</td>";
+                                    echo "<td>Stok</td>";
                                     echo "<td>" . date('d/m/Y', strtotime($query_data["tgl_beli"])) . "</td>";
                                     echo "<td>" . $query_data["cust"] . "</td>";
                                     echo "<td>" . $query_data["supplier"] . "</td>";
                                     echo "<td>" . number_format($query_data["totalharga"]) . "</td>";
                                     echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/beli_detail&mode=edit&nobeli=" . md5($query_data["nobeli"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
                                     echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data Order ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nobeli=" . md5($query_data["nobeli"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
-                                    echo "<a class='btn btn-default btn-sm pull-right' href='pdf/pdf_po.php?&nobeli=" . md5($query_data["nobeli"])."' style='cursor:pointer;'><i class='fa fa-fw fa-print'></i></a>";
                                     echo "</tr>";
                                     $rowCounter++;
                                 }
