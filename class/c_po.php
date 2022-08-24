@@ -66,7 +66,7 @@ class c_po
                     $total = secureParam($params["txtTotal_" . $j], $dbLink);
                     $h = preg_replace("/\D/", "", $harga);
                     $t = preg_replace("/\D/", "", $total);
-                    $q2 = "INSERT INTO `aki_dpo`(`nopo`, `jbarang`,`id_barang`, `qty`,`satuan`,  `harga`, `subtotal`) ";
+                    $q2 = "INSERT INTO `aki_dpo`(`nopo`, `jbarang`,`kode_barang`, `qty`,`satuan`,  `harga`, `subtotal`) ";
 					$q2.= "VALUES ('".$nopo."','".$jbarang."','".$idb."','".$qty."', '".$satuan."', '".$h."', '".$t."');";
 					if (!mysql_query( $q2, $dbLink))
 						throw new Exception('dpo.'.mysql_error());
@@ -134,7 +134,7 @@ class c_po
                     $total = secureParam($params["txtTotal_" . $j], $dbLink);
                     $h = preg_replace("/\D/", "", $harga);
                     $t = preg_replace("/\D/", "", $total);
-                    $q2 = "INSERT INTO `aki_dpo`(`nopo`,`jbarang`, `id_barang`, `qty`,`satuan`, `harga`, `subtotal`) ";
+                    $q2 = "INSERT INTO `aki_dpo`(`nopo`,`jbarang`, `kode_barang`, `qty`,`satuan`, `harga`, `subtotal`) ";
 					$q2.= "VALUES ('".$nopo."','".$jbarang."','".$idb."','".$qty."', '".$satuan."', '".$h."', '".$t."');";
 					if (!mysql_query( $q2, $dbLink))
 						throw new Exception('dpo.'.mysql_error());

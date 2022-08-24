@@ -52,7 +52,7 @@ class c_order
 				throw new Exception('Could not begin transaction');
 			}
 			$qq = "INSERT INTO `aki_beli`( `nobeli`,`nopo`, `tgl_beli`, `id_supplier`, `ket`, `totalharga`,`cust`, `kodeUser`) VALUES ";
-			$qq.= "('".$nobeli."','".$nopo."','".$tgl."','".$supp."','".$jbarang."','".$ket."','".$totalh."','".$cust."','".$pembuat."');";
+			$qq.= "('".$nobeli."','".$nopo."','".$tgl."','".$supp."','".$ket."','".$totalh."','".$cust."','".$pembuat."');";
 			if (!mysql_query( $qq, $dbLink))
 				throw new Exception($qq.'Gagal Add Order.');
 			$qu= "UPDATE `aki_po` SET `r_order`=1 WHERE nopo='".$nopo."'";

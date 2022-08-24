@@ -150,7 +150,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             "scrollX": true,
             "buttons": ["copy", "csv", "excel"]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        
     });
 </script>
 
@@ -176,6 +175,9 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <!-- /.box-header -->
                 <div class="box-body"><center>
                     <div class="input-group input-group-sm">
+                        <?php
+                            if ($hakUser == 90) {
+                        ?>
                         <span class="input-group-btn">
                             <button type="button" id="btnlsupp" class="btn btn-primary btn-flat"><i class="fa fa-plus"> </i> Supplier</button>
                         </span>
@@ -185,11 +187,13 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                         <span class="input-group-btn">
                           <?php
                           echo '<button type="button" id="btnpo" class="btn btn-primary btn-flat"';
-                          //echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/po_detail.php'>";
-                           echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/po_detail&mode=add'>";
+                          echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/po_detail&mode=add'>";
                           echo '<i class="fa fa-plus"> </i> PO</button>';
                           ?>
                         </span>
+                        <?php
+                            }
+                        ?>
                     </div></center>
                 </div>
                 <!-- /.box-body -->
@@ -261,7 +265,11 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <th>Tanggal Beli</th>
                                     <th>Acc OP</th>
                                     <th>Acc FA</th>
-                                    <th>Action</th>
+                                    <?php 
+                                    if ($hakUser == 90) {
+                                        echo "<th>Action</th>";
+                                    }
+                                    ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -310,9 +318,10 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                         }
                                         echo "</center></td>";
                                     }
-                                    
-                                    echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
-                                    echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data PO ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
+                                    if ($hakUser == 90) {
+                                        echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
+                                        echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data PO ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
+                                    }
                                     echo "</tr>";
                                     $rowCounter++;
                                 }
@@ -351,28 +360,28 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     <th width="100px;">Nama</th>
                     <th>Stok</th>
                     <th>Satuan</th>
-                    <th>Golongan</th>
                     <th>Jenis</th>
                     <th>Lokasi</th>
+                    <th>Rak</th>
                     <th>TglBeli</th>
                     <th>HargaBeli</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
-                  $q = "SELECT b.*,db.*,bl.tgl_beli,sum(qty) as stok FROM `aki_barang` b left join aki_dbeli db on b.kode=db.kode_barang left join aki_beli bl on db.nobeli=bl.nobeli group by b.kode";
-                  $rs = new MySQLPagedResultSet($q, 50, $dbLink);
+                  $q = "SELECT b.*,masuk,keluar,retur,so,tgl_beli FROM `aki_barang` b left join (SELECT kode_barang,sum(db.qty) as masuk,nobeli FROM aki_dbeli as db group by db.kode_barang) as db on b.kode=db.kode_barang left join (SELECT kode_barang,sum(dk.qty) as keluar FROM aki_dbkeluar as dk group by dk.kode_barang) as dk on b.kode=dk.kode_barang left join (SELECT kode_barang,sum(dr.qty) as retur FROM aki_dbretur as dr group by dr.kode_barang) as dr on b.kode=dr.kode_barang left join (SELECT kode_barang,sum(dso.qty) as so FROM aki_dbso as dso group by dso.kode_barang) as dso on b.kode=dso.kode_barang left join aki_beli as beli on db.nobeli=beli.nobeli group by b.kode ORDER BY `dso`.`so`  DESC";
+                  $rs = new MySQLPagedResultSet($q,500, $dbLink);
                   $rowCounter=1;
                   while ($query_data = $rs->fetchArray()) {
                     echo "<tr>";
                     echo "<td>" . $query_data["id"] ."</td>";
                     echo '<td onclick=editbrg("'.$query_data["kode"].'")>'. $query_data["kode"] .'</td>';
                     echo "<td>" . $query_data["nama"] ."</td>";
-                    echo "<td>" . strtoupper($query_data["astok"]+$query_data["stok"]) . "</td>";
+                    echo "<td>" . strtoupper($query_data["astok"]+$query_data["masuk"]-$query_data["keluar"]+$query_data["retur"]+($query_data["so"])) . "</td>";
                     echo "<td>" . $query_data["satuan"] ."</td>";
-                    echo "<td>" . $query_data["golongan"] ."</td>";
                     echo "<td>" . $query_data["jenis"] ."</td>";
                     echo "<td>" . $query_data["lokasi"] ."</td>";
+                    echo "<td>" . $query_data["rack"] ."</td>";
                     echo "<td>" . date('d/m/Y', strtotime($query_data["tgl_beli"])) ."</td>";
                     echo "<td>Rp " . number_format($query_data["harga"]) ."</td>";
                     echo("</tr>");
@@ -412,9 +421,9 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     <th>id</th>
                     <th>Kode</th>
                     <th>Supplier</th>
+                    <th>Jenis</th>
                     <th>Alamat</th>
                     <th>NoHP</th>
-                    <th>Bank</th>
                     <th>A.n</th>
                     <th>NoRekening</th>
                   </tr>
@@ -422,15 +431,15 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <tbody>
                   <?php
                   $q = "SELECT * FROM `aki_supplier` ";
-                  $rs = new MySQLPagedResultSet($q, 50, $dbLink);
+                  $rs = new MySQLPagedResultSet($q, 500, $dbLink);
                   $rowCounter=1;
                   while ($query_data = $rs->fetchArray()) {
                     echo "<tr>";
                     echo "<td>" . $query_data["id"] ."</td>";
                     echo '<td onclick=editsupp("'.$query_data["kodesupp"].'")>'. $query_data["kodesupp"] .'</td>';
                     echo "<td>" . $query_data["supplier"] ."</td>";
+                    echo "<td>" . $query_data["jenis"] . "</td>";
                     echo "<td>" . $query_data["alamat"] . "</td>";
-                    echo "<td>" . $query_data["kontak"] ."</td>";
                     echo "<td>" . $query_data["nomor"] ."</td>";
                     echo "<td>" . $query_data["nrek"] ."</td>";
                     echo "<td>" . $query_data["norek"] ."</td>";

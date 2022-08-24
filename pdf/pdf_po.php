@@ -46,8 +46,12 @@
     $pdf->MultiCell(60,5,$hasil['norek'],0,'J',0);
 
     $pdf->SetMargins(122, 0, 10, true);
-    $pdf->Ln(-43.5);
-    $pdf->Cell(25,7,'Alamat Tujuan',0,1,'L',0);
+    if (strlen($hasil['alamat'])>49) {
+        $pdf->Ln(-43.5);
+    }else if (strlen($hasil['alamat'])<=49){
+        $pdf->Ln(-39);
+    }
+    $pdf->Cell(25,7,strlen($hasil['alamat']).'Alamat Tujuan',0,1,'L',0);
     $pdf->Cell(80,0.5,'',1,1,'L',0.5);
     $pdf->SetFont('Calibri', 'B', 11);
     $pdf->MultiCell(60,5,'PT Anugerah Kubah Indonesia',0,'J',0);

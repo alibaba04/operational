@@ -49,27 +49,24 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             }
         });
     });
-    /*function sjbarang(){
-        var x = document.getElementById("txtjbrg").value;
-        if (x=='penunjang') {
-            $("select").removeClass("select2");
-            /*const y = document.getElementById("idsupp");
-            y.remove();
-        }
-    }*/
+
     $(function () {
         $("[data-mask]").inputmask();
         $(".select2").select2();
         $("#txttglpo").datepicker({ format: 'dd-mm-yyyy', autoclose:true }); 
-        /*$('#txttglpo').datepicker({ 
-             locale: { format: 'DD-MM-YYYY' }
-        });*/
         var x = document.getElementById("btnsavepo");
         if ($("#totalh").val()=='0' ) {
             x.setAttribute("disabled", ""); 
         }
         
     });
+    function selectbrg(tcounter) {
+        var x = $("#txtkodeb_"+tcounter).val();
+        $.post("function/ajax_function.php",{ fungsi: "getsatuan",kode:x },function(data)
+        {
+            $("#txtSatuan_"+tcounter).val(data.satuan);
+        },"json");
+    }
     function kodeb(tcounter) {
         $.post("function/ajax_function.php",{ fungsi: "ambilkodeb" },function(data)
         {
@@ -80,7 +77,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 option.value = data[i].val;
                 x.add(option);
             }
-            
         },"json"); 
     }
     function subtotal($tcounter) {
@@ -133,7 +129,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             var td = document.createElement("TD");
             td.setAttribute("align","left");
             td.style.verticalAlign = 'top';
-            td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
+            td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'" onchange="selectbrg('+tcounter+')"><option>- Nama Barang- </option></select></div>';
             trow.appendChild(td);
         }
 
@@ -229,12 +225,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     }else if (strlen($kode)==3){
                                         $kode = '0'.$kode;
                                     }
-                                    $newnoPo = 'POPTAKI'.$tglpo.$kode;
+                                    $newnoPo = 'PTAKIPO'.$tglpo.$kode;
                                 }else{
-                                    $newnoPo = 'POPTAKI'.$tglpo.'0001';
+                                    $newnoPo = 'PTAKIPO'.$tglpo.'0001';
                                 }
                             }else{
-                                $newnoPo = 'POPTAKI'.$tglpo.'0001';
+                                $newnoPo = 'PTAKIPO'.$tglpo.'0001';
                             }
                         }
 
@@ -255,7 +251,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 </div>
                 <div class="form-group ">
                     <div class="lsupp" style="padding-bottom: 10px;padding-right: 0px;padding-left: 5px;">
-                        <select class="form-control select2" name="idsupp" id="idsupp">
+                        <select class="form-control select2" name="idsupp" id="idsupp"required>
                             <?php
                             $q = 'SELECT * FROM `aki_supplier`';
                             $sql_supp = mysql_query($q,$dbLink);

@@ -5,7 +5,7 @@
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined( 'validSession' ) or die( 'Restricted access' ); 
 
-class c_retur
+class c_so
 {
 	var $strResults="";
 	
@@ -13,7 +13,7 @@ class c_retur
 	{
 		$temp=TRUE;
 
-		if($params["txtnoretur"]=='' )
+		if($params["txtnoso"]=='' )
 		{
 			$this->strResults.="id belum terakumulasi!<br/>";
 			$temp=FALSE;
@@ -29,15 +29,14 @@ class c_retur
 		//Jika input tidak valid, langsung kembalikan pesan error ke user ($this->strResults)
 		if(!$this->validate($params))
 		{	//Pesan error harus diawali kata "Gagal"
-			$this->strResults="Gagal Add retur - ".$this->strResults;
+			$this->strResults="Gagal Add SO - ".$this->strResults;
 			return $this->strResults;
 		}
 		$tgl = date("Y-m-d");
-		$noretur = secureParam($params["txtnoretur"],$dbLink);
-		$tgl = secureParam($params["txttglpo"],$dbLink);
+		$noso = secureParam($params["txtnoso"],$dbLink);
+		$tgl = secureParam($params["txttglso"],$dbLink);
 		$cust = secureParam($params["txtcust"],$dbLink);
 		$ket = secureParam($params["txtket"],$dbLink);
-		$kodeproyek = secureParam($params["txtproyek"],$dbLink);
         $pembuat = $_SESSION["my"]->id;
 		try
 		{
@@ -48,18 +47,18 @@ class c_retur
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
-			$qq = "INSERT INTO `aki_bretur`( `nobretur`, `tgl_bretur`, `ket`, `kodeUser`, `aktif`) VALUES ";
-			$qq.= "('".$noretur."','".$tgl."','".$ket."','".$pembuat."','0');";
+			$qq = "INSERT INTO `aki_bso`( `nobso`, `tgl_bso`, `ket`, `kodeUser`, `aktif`) VALUES ";
+			$qq.= "('".$noso."','".$tgl."','".$ket."','".$pembuat."','0');";
 			if (!mysql_query( $qq, $dbLink))
-				throw new Exception($qq.'Gagal Add retur.');
+				throw new Exception($qq.'Gagal Add so.');
 			$jumData = $params["jumAddPo"];
 			for ($j = 0; $j <= $jumData ; $j++){
 				if (!empty($params['chkAddJurnal_'.$j])){
                     $idb = secureParam($params["txtkodeb_" . $j], $dbLink);
                     $qty = secureParam($params["txtqty_" . $j], $dbLink);
                     $satuan = secureParam($params["txtSatuan_" . $j], $dbLink);
-                    $q2 = "INSERT INTO `aki_dbretur`(`nobretur`, `kode_barang`, `qty`, `satuan`)";
-					$q2.= "VALUES ('".$noretur."','".$idb."','".$qty."', '".$satuan."');";
+                    $q2 = "INSERT INTO `aki_dbso`(`nobso`, `kode_barang`, `qty`, `satuan`)";
+					$q2.= "VALUES ('".$noso."','".$idb."','".$qty."', '".$satuan."');";
 					if (!mysql_query( $q2, $dbLink))
 						throw new Exception('dretur.'.mysql_error());
 					@mysql_query("COMMIT", $dbLink);
@@ -89,7 +88,7 @@ class c_retur
 			return $this->strResults;
 		}
 		$tgl = date("Y-m-d");
-		$noretur = secureParam($params["txtnoretur"],$dbLink);
+		$noso = secureParam($params["txtnoso"],$dbLink);
 		$tgl = secureParam($params["txttglpo"],$dbLink);
 		$cust = secureParam($params["txtcust"],$dbLink);
 		$ket = secureParam($params["txtket"],$dbLink);
@@ -107,13 +106,13 @@ class c_retur
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
-			$q3 = "UPDATE `aki_bretur` SET `nobretur`='".$noretur."',`tgl_bretur`='".$tgl."',`kodeproyek`='".$kodeproyek."',`cust`='".$cust."',`ket`='".$ket."'";
-			$q3.= " WHERE nobretur='".$noretur."'";
+			$q3 = "UPDATE `aki_bretur` SET `nobretur`='".$noso."',`tgl_bretur`='".$tgl."',`kodeproyek`='".$kodeproyek."',`cust`='".$cust."',`ket`='".$ket."'";
+			$q3.= " WHERE nobretur='".$noso."'";
 			if (!mysql_query( $q3, $dbLink))
 				throw new Exception($q3.'Gagal Edit retur. ');
 			$jumData = $params["jumretur"];
 			for ($j = 0; $j <= $jumData ; $j++){
-				$q3 = "DELETE FROM `aki_dbretur` WHERE nobretur='".$noretur."'";
+				$q3 = "DELETE FROM `aki_dbretur` WHERE nobretur='".$noso."'";
 				if (!mysql_query( $q3, $dbLink))
 					throw new Exception('Gagal edit data retur.');
 			}
@@ -123,14 +122,14 @@ class c_retur
                     $qty = secureParam($params["txtqty_" . $j], $dbLink);
                     $satuan = secureParam($params["txtSatuan_" . $j], $dbLink);
                     $q2 = "INSERT INTO `aki_dbretur`(`nobretur`, `kode_barang`, `qty`, `satuan`)";
-					$q2.= "VALUES ('".$noretur."','".$idb."','".$qty."', '".$satuan."');";
+					$q2.= "VALUES ('".$noso."','".$idb."','".$qty."', '".$satuan."');";
 					if (!mysql_query( $q2, $dbLink))
 						throw new Exception('dretur.'.mysql_error());
 					@mysql_query("COMMIT", $dbLink);
 					$this->strResults="Sukses Add dretur";
 				}
 			}
-			$ket =" -Update to retur nobretur=".$noretur.", datetime: ".$tgl;
+			$ket =" -Update to retur nobretur=".$noso.", datetime: ".$tgl;
 			$q4 = "INSERT INTO `aki_report`( `kodeUser`, `datetime`, `ket`) VALUES";
 			$q4.= "('".$pembuat."','".$tgl."','".$ket."');";
 			if (!mysql_query( $q4, $dbLink))
@@ -146,11 +145,11 @@ class c_retur
 		}
 		return $this->strResults;
 	}
-	function delete($noretur)
+	function delete($noso)
 	{
 		global $dbLink;
 
-		$noretur  = secureParam($noretur,$dbLink);
+		$noso  = secureParam($noso,$dbLink);
         $pembatal = $_SESSION["my"]->id;
 
 		try
@@ -163,15 +162,15 @@ class c_retur
 			
 			date_default_timezone_set("Asia/Jakarta");
 			$tgl = date("Y-m-d h:i:sa");
-			$ket = "`npo`=".$noretur." -has delete, datetime: ".$tgl;
+			$ket = "`npo`=".$noso." -has delete, datetime: ".$tgl;
 			$q4 = "INSERT INTO `aki_report`( `kodeUser`, `datetime`, `ket`) VALUES";
 			$q4.= "('".$pembatal."','".$tgl."','".$ket."');";
 			if (!mysql_query( $q4, $dbLink))
-						throw new Exception($q4.'Gagal hapus data noretur. ');
+						throw new Exception($q4.'Gagal hapus data noso. ');
 
-			$q = "UPDATE `aki_po` SET `aktif`='1' WHERE md5(noretur)='".$noretur."'";
+			$q = "UPDATE `aki_po` SET `aktif`='1' WHERE md5(noso)='".$noso."'";
 			if (!mysql_query( $q, $dbLink))
-				throw new Exception('Gagal hapus data noretur.');
+				throw new Exception('Gagal hapus data noso.');
 			@mysql_query("COMMIT", $dbLink);
 			$this->strResults="Sukses Hapus Data PO ";
 		}

@@ -76,6 +76,18 @@ case "ambilkodeb":
         break;
     }
 break;
+case "getsatuan":
+    $kode = $_POST['kode'];
+    $result = mysql_query("SELECT b.*,masuk,keluar,retur,so FROM `aki_barang` b left join (SELECT kode_barang,sum(db.qty) as masuk FROM aki_dbeli as db group by db.kode_barang) as db on b.kode=db.kode_barang left join (SELECT kode_barang,sum(dk.qty) as keluar FROM aki_dbkeluar as dk group by dk.kode_barang) as dk on b.kode=dk.kode_barang left join (SELECT kode_barang,sum(dr.qty) as retur FROM aki_dbretur as dr group by dr.kode_barang) as dr on b.kode=dr.kode_barang left join (SELECT kode_barang,sum(dso.qty) as so FROM aki_dbso as dso group by dso.kode_barang) as dso on b.kode=dso.kode_barang WHERE kode='".$kode."' group by b.kode ORDER BY `dk`.`keluar` DESC", $dbLink);
+    if (mysql_num_rows($result)>0) {
+        $idx = 0;
+        while ( $data = mysql_fetch_assoc($result)) {
+            $stok = $data['astok']+$data['masuk']-$data['keluar']+$data['retur']+($data['so']);
+            echo json_encode(array("satuan"=>$data['satuan'],"stok"=>$stok));
+        } 
+        break;
+    }
+break;
 case "checkKodeUser":
     $result = mysql_query("select kodeUser FROM aki_user WHERE kodeUser ='" . secureParamAjax($_POST['kodeUser'], $dbLink) . "'", $dbLink);
     if (mysql_num_rows($result)) {

@@ -56,6 +56,14 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             
         },"json"); 
     }
+    function selectbrg(tcounter) {
+        var x = $("#txtkodeb_"+tcounter).val();
+        $.post("function/ajax_function.php",{ fungsi: "getsatuan",kode:x },function(data)
+        {
+            $("#txtSatuan_"+tcounter).val(data.satuan);
+            $("#txtcqty_"+tcounter).val(data.stok);
+        },"json");
+    }
 
     function addJurnal(){   
         tcounter = $("#jumbkeluar").val();
@@ -76,7 +84,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         var td = document.createElement("TD");
         td.setAttribute("align","left");
         td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
+        td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'" onchange="selectbrg('+tcounter+')"><option>- Nama Barang- </option></select></div>';
         trow.appendChild(td);
 
         //Kolom 4 Qty
@@ -107,8 +115,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 </style>
 <section class="content-header">
     <h1>
-        Pengajuan
-        <small>Detail Pengajuan</small>
+        Permintaan
+        <small>Detail Barang Keluar</small>
     </h1>
 </section>
 <form action="index2.php?page=view/pengajuan_detail" method="post" name="frmKasKeluarDetail" onSubmit="return validasiForm(this);" autocomplete="off">
@@ -125,7 +133,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <div class="form-group" >
                     <div class="input-group">
                         <div class="input-group-addon">
-                            <label class="control-label" for="txtnopo">No Pengajuan</label>
+                            <label class="control-label" for="txtnopo">No</label>
                         </div>
                         <?php
                         if ($_GET["mode"] == "edit") {
@@ -159,12 +167,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     }else if (strlen($kode)==3){
                                         $kode = '0'.$kode;
                                     }
-                                    $noPo = 'WRHP'.$tglpo.$kode;
+                                    $noPo = 'PTAKIOU'.$tglpo.$kode;
                                 }else{
-                                    $noPo = 'WRHP'.$tglpo.'0001';
+                                    $noPo = 'PTAKIOU'.$tglpo.'0001';
                                 }
                             }else{
-                                $noPo = 'WRHP'.$tglpo.'0001';
+                                $noPo = 'PTAKIOU'.$tglpo.'0001';
                             }
                         }
 
@@ -175,7 +183,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">
-                            <label class="control-label" for="txttglpengajuan">Tanggal Order</label>
+                            <label class="control-label" for="txttglpengajuan">Tanggal </label>
                         </div>
                         <input name="txttglpengajuan" id="txttglpengajuan" class="form-control" value="<?php 
                         if($_GET["mode"]=='edit'){ 

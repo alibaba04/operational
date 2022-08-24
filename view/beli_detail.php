@@ -87,6 +87,14 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         $("#txtTotal_"+$tcounter).val(tharga); 
         total();
     }
+    function selectbrg(tcounter) {
+        var x = $("#txtkodeb_"+tcounter).val();
+        $.post("function/ajax_function.php",{ fungsi: "getsatuan",kode:x },function(data)
+        {
+            $("#txtSatuan_"+tcounter).val(data.satuan);
+            $("#txtcqty_"+tcounter).val(data.stok);
+        },"json");
+    }
     function total() {
         var jml = $("#jumaddOrder").val();
         var total = 0
@@ -103,7 +111,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 
     function addJurnal(){    
         tcounter = $("#jumaddOrder").val();
-        kodeb(tcounter);
+        //kodeb(tcounter);
         var ttable = document.getElementById("kendali");
         var trow = document.createElement("TR");
         trow.setAttribute("id", "trid_"+tcounter);
@@ -128,7 +136,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             var td = document.createElement("TD");
             td.setAttribute("align","left");
             td.style.verticalAlign = 'top';
-            td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'"></select></div>';
+            td.innerHTML+='<div class="form-group"><select class="form-control select2" name="txtkodeb_'+tcounter+'" id="txtkodeb_'+tcounter+'" onchange="selectbrg('+tcounter+')"><option>- Nama Barang- </option></select></div>';
             trow.appendChild(td);
         }
 
@@ -234,12 +242,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     }else if (strlen($kode)==3){
                                         $kode = '0'.$kode;
                                     }
-                                    $noPo = 'ORDERPTAKI'.$tglpo.$kode;
+                                    $noPo = 'PTAKIIN'.$tglpo.$kode;
                                 }else{
-                                    $noPo = 'ORDERPTAKI'.$tglpo.'0001';
+                                    $noPo = 'PTAKIIN'.$tglpo.'0001';
                                 }
                             }else{
-                                $noPo = 'ORDERPTAKI'.$tglpo.'0001';
+                                $noPo = 'PTAKIIN'.$tglpo.'0001';
                             }
                         }
 
@@ -383,7 +391,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             }
                         }else{
                             if (isset($_GET["nopo"])){
-                                $q = "SELECT dpo.*,b.kode,b.nama FROM `aki_dpo` dpo left join aki_barang b on dpo.id_barang=b.kode WHERE md5(dpo.nopo)='".$nopo."' order by id asc";
+                                $q = "SELECT dpo.*,b.kode,b.nama FROM `aki_dpo` dpo left join aki_barang b on dpo.kode_barang=b.kode WHERE md5(dpo.nopo)='".$nopo."' order by id asc";
                                 $rsdpolist = mysql_query($q, $dbLink);
                                 $iPO = 0;
                                 while ($dpolist = mysql_fetch_array($rsdpolist)) {
@@ -393,7 +401,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                     echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                     if ($dpolist["jbarang"] == 'penunjang') {
-                                        echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["id_barang"]. '"style="text-align:left"/></div></td>';
+                                        echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/></div></td>';
                                     }else{
                                         $q = "SELECT * FROM `aki_barang`";
                                         $listbrg = mysql_query($q, $dbLink);

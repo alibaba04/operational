@@ -382,10 +382,9 @@ function AddPage($orientation='', $size='', $rotation=0)
 
 function Header()
 {
-	$this->SetMargins(10, 10, 10, true);
-    $this->image('../dist/img/cop-aki.jpg',15,12,185,30);
+    $this->image('../dist/img/kop.jpg',0,0,215,330);
     // Line break
-    $this->Ln(35);
+    $this->Ln(30);
 }
 
 
@@ -395,7 +394,7 @@ function Footer()
 	$this->SetMargins(75, 10, 15, true);
 	$this->SetY(5);
     // Arial italic 8
-        $this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');
+        //$this->Cell(120,5,'Halaman '.$this->PageNo(),0,0,'R');
 }
 
 function PageNo()
