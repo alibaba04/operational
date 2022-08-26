@@ -2,7 +2,7 @@
 //=======  : Alibaba
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined('validSession') or die('Restricted access');
-$curPage = "view/reportt_list";
+$curPage = "view/report_list";
 error_reporting( error_reporting() & ~E_NOTICE );
 error_reporting(E_ERROR | E_PARSE);
 //Periksa hak user pada modul/menu ini

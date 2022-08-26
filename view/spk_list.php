@@ -2,7 +2,7 @@
 //=======  : Alibaba
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined('validSession') or die('Restricted access');
-$curPage = "view/SPK_list";
+$curPage = "view/spk_list";
 
 //Periksa hak user pada modul/menu ini
 $judulMenu = 'SPK';

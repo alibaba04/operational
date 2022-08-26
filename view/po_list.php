@@ -88,16 +88,17 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     function editsupp($kode){
         $.post("function/ajax_function.php",{ fungsi: "editsupp",kode:$kode},function(data)
         {
-            $("#txtnopo").val(data.kode);
-            $("#txtnamab").val(data.nama);
-            $("#txtsatuan").val(data.satuan);
-            $("#txtjenis").val(data.jenis);
-            $("#txtgol").val(data.golongan);
-            $("#txtlok").val(data.lokasi);
+            $("#txtnopo").val(data.kodesupp);
+            $("#txtsupp").val(data.supplier);
+            $("#txtalamat").val(data.alamat);
+            $("#txtnohp").val(data.nomor);
+            $("#txtbank").val(data.nrek);
+            $("#txtnameb").val(data.kontak);
+            $("#txtnorek").val(data.norek);
         },"json");
-        $("#txtMode").val('Editbrg');
+        $("#txtMode").val('Editsupp');
         document.getElementById("txtastok").disabled = true;
-        $("#myBarang").modal({backdrop: 'static'});
+        $("#mySupp").modal({backdrop: 'static'});
     }
     function clearformbrg() {
       document.getElementById("frmbrg").reset();
@@ -436,7 +437,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                   while ($query_data = $rs->fetchArray()) {
                     echo "<tr>";
                     echo "<td>" . $query_data["id"] ."</td>";
-                    echo '<td onclick=editsupp("'.$query_data["kodesupp"].'")>'. $query_data["kodesupp"] .'</td>';
+                    echo '<td onclick=editsupp("'.$query_data["kodesupp"].'") style="cursor:pointer;">'. $query_data["kodesupp"] .'</td>';
                     echo "<td>" . $query_data["supplier"] ."</td>";
                     echo "<td>" . $query_data["jenis"] . "</td>";
                     echo "<td>" . $query_data["alamat"] . "</td>";
@@ -470,7 +471,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             <div class="modal-header">
                 <input type='hidden' name='txtMode' value='Add'>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add Supplier <label id="labelclr"></label></h4>
+                <h4 class="modal-title">Supplier <label id="labelclr"></label></h4>
             </div>
             <div class="modal-body">
                 <div class="card-body">
