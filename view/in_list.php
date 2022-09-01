@@ -2,7 +2,7 @@
 //=======  : Alibaba
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined('validSession') or die('Restricted access');
-$curPage = "view/beli_list";
+$curPage = "view/in_list";
 require_once( './config.php' );
 global $dbLink;
 //Periksa hak user pada modul/menu ini
@@ -70,12 +70,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 <!-- End of Script Tanggal -->
 <section class="content-header">
     <h1>
-        Order
+        Barang Masuk
     </h1>
     <ol class="breadcrumb">
         <li><a href="index.php"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Input</li>
-        <li class="active">Order</li>
+        <li class="active">Barang Masuk</li>
     </ol>
 </section>
 
@@ -92,8 +92,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                         <span class="input-group-btn">
                           <?php
                           echo '<button type="button" id="btnpo" class="btn btn-primary btn-flat"';
-                           echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/beli_detail&mode=add'>";
-                          echo '<i class="fa fa-plus"> </i> Order</button>';
+                           echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/in_detail&mode=add'>";
+                          echo '<i class="fa fa-plus"> </i> Barang Masuk</button>';
                           ?>
                         </span>
                     </div></center>
@@ -159,9 +159,9 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>No Order</th>
+                                    <th>Kode</th>
                                     <th>Jenis</th>
-                                    <th>Tanggal Beli</th>
+                                    <th>Tgl Barang Masuk</th>
                                     <th>Pemohon</th>
                                     <th>Supplier</th>
                                     <th>Total Harga</th>
@@ -180,7 +180,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     echo "<td>" . $query_data["cust"] . "</td>";
                                     echo "<td>" . $query_data["supplier"] . "</td>";
                                     echo "<td>" . number_format($query_data["totalharga"]) . "</td>";
-                                    echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/beli_detail&mode=edit&nobeli=" . md5($query_data["nobeli"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
+                                    echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/in_detail&mode=edit&nobeli=" . md5($query_data["nobeli"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
                                     echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data Order ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nobeli=" . md5($query_data["nobeli"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
                                     echo "</tr>";
                                     $rowCounter++;

@@ -83,7 +83,7 @@
     $pdf->Cell(35,7,'Sub Total (Rp)',1,1,'C',1);
     $pdf->SetFont('Calibri', '', 10);
 
-    $q2 = "SELECT dpo.*,b.kode,b.nama FROM `aki_dpo` dpo left join aki_barang b on dpo.id_barang=b.kode WHERE md5(dpo.nopo)='".$nopo."' order by id asc";
+    $q2 = "SELECT dpo.*,b.kode,b.nama FROM `aki_dpo` dpo left join aki_barang b on dpo.kode_barang=b.kode WHERE md5(dpo.nopo)='".$nopo."' order by id asc";
     $rs2 = mysql_query($q2, $dbLink);
     $jml=1;
     $total=0;

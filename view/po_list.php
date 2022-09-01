@@ -27,32 +27,29 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     $tmppo = new c_po;
 
 //Jika Mode Tambah/Add
-    if (isset($_POST["txtMode"]) == "Addsupp") {
+    if (($_POST["txtMode"]) == "Addsupp") {
         $pesan = $tmpsupp->addsupp($_POST);
-    }
-    if (isset($_POST["txtMode"]) == "Addbrg") {
+    }else if (($_POST["txtMode"]) == "Addbrg") {
         $pesan = $tmpbrg->addbrg($_POST);
     }
 
 //Jika Mode Ubah/Edit
-    if (isset($_POST["txtMode"]) == "Edit") {
-        $pesan = $tmppo->edit($_POST);
+    if (($_POST["txtMode"]) == "Editsupp") {
+        $pesan = $tmpsupp->edit($_POST);
+    }else if(($_POST["txtMode"]) == "Editbrg") {
+        $pesan = $tmpbrg->edit($_POST);
     }
 
 //Jika Mode Hapus/Delete
     if ($_GET["txtMode"] == "Delete") {
         $pesan = $tmppo->delete($_GET["nopo"]);
-    }
-    if ($_GET["txtMode"] == "Accop") {
+    }else if($_GET["txtMode"] == "Accop") {
         $pesan = $tmppo->accop($_GET["nopo"]);
-    }
-    if ($_GET["txtMode"] == "Cancelop") {
+    }else if($_GET["txtMode"] == "Cancelop") {
         $pesan = $tmppo->cancelop($_GET["nopo"]);
-    }
-    if ($_GET["txtMode"] == "Accfa") {
+    }else if($_GET["txtMode"] == "Accfa") {
         $pesan = $tmppo->accfa($_GET["nopo"]);
-    }
-    if ($_GET["txtMode"] == "Cancelfa") {
+    }else if($_GET["txtMode"] == "Cancelfa") {
         $pesan = $tmppo->cancelfa($_GET["nopo"]);
     }
 
@@ -74,43 +71,43 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     function editbrg($kode){
         $.post("function/ajax_function.php",{ fungsi: "editbrg",kode:$kode},function(data)
         {
+            document.getElementById("nokodeb").setAttribute("readonly", ""); 
             $("#nokodeb").val(data.kode);
             $("#txtnamab").val(data.nama);
             $("#txtsatuan").val(data.satuan);
-            $("#txtjenis").val(data.jenis);
-            $("#txtgol").val(data.golongan);
+            $("#txtbjenis").val(data.jenis);
             $("#txtlok").val(data.lokasi);
+            $("#txtrack").val(data.rack);
+            $("#txtMode").val('Editbrg');
         },"json");
-        $("#txtMode").val('Editbrg');
         document.getElementById("txtastok").disabled = true;
         $("#myBarang").modal({backdrop: 'static'});
     }
     function editsupp($kode){
         $.post("function/ajax_function.php",{ fungsi: "editsupp",kode:$kode},function(data)
         {
-            $("#txtnopo").val(data.kodesupp);
+            $("#txtksupp").val(data.kodesupp);
             $("#txtsupp").val(data.supplier);
             $("#txtalamat").val(data.alamat);
+            $("#txtsjenis").val(data.jenis);
             $("#txtnohp").val(data.nomor);
-            $("#txtbank").val(data.nrek);
             $("#txtnameb").val(data.kontak);
             $("#txtnorek").val(data.norek);
+            $("#txtMode").val('Editsupp');
+            $("#cbobank option:first").remove();
+            var x = document.getElementById("cbobank");
+            $('#cbobank').prepend($('<option val="'+data.nrek+'"selected>'+data.nrek+'</option>')); 
         },"json");
-        $("#txtMode").val('Editsupp');
-        document.getElementById("txtastok").disabled = true;
         $("#mySupp").modal({backdrop: 'static'});
-    }
-    function clearformbrg() {
-      document.getElementById("frmbrg").reset();
-      document.getElementById("frmpo").reset();
     }
     function checkkode() {
       var $kode = $("#nokodeb").val();
-      $.post("function/ajax_function.php",{ fungsi: "checkkode",kode:$kode},function(data)
+      $.post("function/ajax_function.php",{ fungsi: "checknkode",nkode:$kode},function(data)
         {
-            alert(data);
+            alert('data');
         },"json");
     }
+    
     $(function () {
         $("#example2").DataTable({
           "autoWidth": false
@@ -120,9 +117,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
            "autoWidth": false
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         $(".select2").select2();
-        $("#btnsupp").click(function(){ 
-            $("#mySupp").modal({backdrop: 'static'});
-        });
         $("#btnlsupp").click(function(){ 
             $("#mylSupp").modal({backdrop: 'static'});
         });
@@ -130,16 +124,19 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             $("#mylBarang").modal({backdrop: 'static'});
         });
         $("#btnbrg").click(function(){ 
-            clearformbrg();
+            document.getElementById("nokodeb").readOnly = false; 
             $("#txtMode").val('Addbrg');
             $("#myBarang").modal({backdrop: 'static'});
         });
         $("#btnsupp").click(function(){ 
-            clearformbrg();
+            $.post("function/ajax_function.php",{ fungsi: "getkodesupp"},function(data)
+            {
+                document.getElementById("txtksupp").value = 'supp'+data;
+            },"json");
             $("#txtMode").val('Addsupp');
             $("#mySupp").modal({backdrop: 'static'});
         });
-        
+
         $('#tglTransaksi').daterangepicker({ 
             locale: { format: 'DD-MM-YYYY' } 
         });
@@ -319,7 +316,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                         }
                                         echo "</center></td>";
                                     }
-                                    if ($hakUser == 90) {
+                                    if ($hakUser == 90 && $query_data["acc_fa"]!=1 && $query_data["acc_op"]!=1) {
                                         echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
                                         echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data PO ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
                                     }
@@ -341,16 +338,15 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         </section>
     </div>
 </section>
+<form action="index2.php?page=view/po_list" method="post" name="frmpo" onSubmit="return validasiForm(this);">
+    <input type='hidden' name='txtMode' id='txtMode' value=''>
 <div class="modal fade" id="mylBarang" role="dialog">
     <div class="modal-dialog modal-lg">
         <!-- Modal content-->
         <div class="modal-content">
-          <form action="index2.php?page=view/po_list" method="post" name="frmpo" onSubmit="return validasiForm(this);">
-            <input type='hidden' name='txtMode' value='Addbrg'>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">List Barang <label id="labelclr"></label></h4>
-
             </div>
             <div class="modal-body">
               <table id="example2" class="table table-bordered table-hover dataTable dtr-inline"width="100%" >
@@ -376,7 +372,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                   while ($query_data = $rs->fetchArray()) {
                     echo "<tr>";
                     echo "<td>" . $query_data["id"] ."</td>";
-                    echo '<td onclick=editbrg("'.$query_data["kode"].'")>'. $query_data["kode"] .'</td>';
+                    echo '<td onclick=editbrg("'.$query_data["kode"].'") style="cursor:pointer;">'. $query_data["kode"] .'</td>';
                     echo "<td>" . $query_data["nama"] ."</td>";
                     echo "<td>" . strtoupper($query_data["astok"]+$query_data["masuk"]-$query_data["keluar"]+$query_data["retur"]+($query_data["so"])) . "</td>";
                     echo "<td>" . $query_data["satuan"] ."</td>";
@@ -401,7 +397,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             <div class="modal-footer">
               <button type="button" id="btnbrg" class="btn btn-primary"><i class="fa fa-plus"> </i> Barang</button>
             </div>
-          </form>
         </div>
     </div>
 </div>
@@ -409,8 +404,6 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     <div class="modal-dialog modal-lg">
         <!-- Modal content-->
         <div class="modal-content">
-          <form action="index2.php?page=view/po_list" method="post" name="frmpo" onSubmit="return validasiForm(this);">
-            <input type='hidden' name='txtMode' value='Addsupp'>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">List Supplier <label id="labelclr"></label></h4>
@@ -460,16 +453,13 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             <div class="modal-footer">
               <button type="button" id="btnsupp" class="btn btn-primary"><i class="fa fa-plus"> </i> Supplier</button>
             </div>
-          </form>
         </div>
     </div>
 </div>
 <div class="modal fade" id="mySupp" role="dialog">
     <div class="modal-dialog">
-      <form action="index2.php?page=view/po_list" method="post" name="frmpo" id="frmpo" onSubmit="return validasiForm(this); " enctype="multipart/form-data">
         <div class="modal-content">
             <div class="modal-header">
-                <input type='hidden' name='txtMode' value='Add'>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Supplier <label id="labelclr"></label></h4>
             </div>
@@ -478,40 +468,38 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                   <div class="form-group row">
                     <label for="nopo" class="col-sm-2 col-form-label">Kode Supplier</label>
                     <div class="col-sm-6">
-                      <?php
-                        $q = "SELECT max(kodesupp) as kodesupp FROM `aki_supplier`";
-                        $rsTemp = mysql_query($q, $dbLink);
-                        if ($dSupp = mysql_fetch_array($rsTemp)) {
-                          $id = explode("supp",$dSupp["kodesupp"]);
-                          $id = (int)$id[1]+1;
-                          $id = str_pad($id, 4, '0', STR_PAD_LEFT);
-                          echo '<input type="text" class="form-control" id="txtnopo" name="txtnopo" value="supp'.$id.'" disabled required>';
-                        } 
-                      ?>
+                        <input type="text" class="form-control" id="txtksupp" name="txtksupp" readonly >
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="txtsupp" class="col-sm-2 col-form-label">Supplier</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="txtsupp" name="txtsupp" required>
+                      <input type="text" class="form-control" id="txtsupp" name="txtsupp">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="txtalamat" class="col-sm-2 col-form-label">Alamat</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="txtalamat" name="txtalamat" required></textarea>
+                        <textarea class="form-control" id="txtalamat" name="txtalamat" ></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="txtsjenis" class="col-sm-2 col-form-label">Jenis</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="txtsjenis" name="txtsjenis" ></textarea>
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="txtnohp" class="col-sm-2 col-form-label">No HP</label>
                     <div class="col-sm-10">
-                      <input type="phone" class="form-control" id="txtnohp" name="txtnohp" required>
+                      <input type="phone" class="form-control" id="txtnohp" name="txtnohp" >
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="txtbank" class="col-sm-2 col-form-label">Bank</label>
                     <div class="col-sm-10">
-                        <select class="form-control select2" id="txtbank" name="txtbank" style="width: 100%;">
+                        <select class="form-control select2" id="cbobank" name="cbobank" style="width: 100%;">
+                          <option value="">--Nama Bank--</option>
                           <option value="Bank Mandiri">Bank Mandiri</option>
                           <option value="Bank Bukopin">Bank Bukopin</option>
                           <option value="Bank Danamon">Bank Danamon</option>
@@ -569,30 +557,27 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                   <div class="form-group row">
                     <label for="txtnohp" class="col-sm-2 col-form-label">A.n</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="txtnameb" name="txtnameb" required>
+                      <input type="text" class="form-control" id="txtnameb" name="txtnameb" >
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="txtnorek" class="col-sm-2 col-form-label">No Rekening</label>
                     <div class="col-sm-10">
-                      <input type="number" class="form-control" id="txtnorek" name="txtnorek" required>
+                      <input type="number" class="form-control" id="txtnorek" name="txtnorek">
                     </div>
                   </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <input type="button" class="btn btn-primary" value="Add"  id="btnaddSupp" name="btnaddSupp">
+                <input type="submit" class="btn btn-primary" value="Add"  id="btnaddSupp" name="btnaddSupp">
             </div>
         </div>
-      </form>
     </div>
 </div>
 <div class="modal fade" id="myBarang" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
-          <form action="index2.php?page=view/po_list" method="post" name="frmbrg" id="frmbrg" onSubmit="return validasiForm(this);" autocomplete="off">
-            <input type='hidden' name='txtMode' id='txtMode' value='Addbrg'>
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Add Barang <label id="labelclr"></label></h4>
@@ -602,7 +587,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                   <div class="form-group row">
                     <label for="nokodeb" class="col-sm-2 col-form-label">Kode Barang</label>
                     <div class="col-sm-6">
-                      <input type="text" class="form-control" id="nokodeb" name="nokodeb" onfocusout="checkkode()">
+                      <input type="text" class="form-control" id="nokodeb" name="nokodeb" >
                     </div>
                   </div>
                   <div class="form-group row">
@@ -618,21 +603,21 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="txtgol" class="col-sm-2 col-form-label">Jenis</label>
+                    <label for="txtbjenis" class="col-sm-2 col-form-label">Jenis</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="txtjenis" name="txtjenis">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="txtgol" class="col-sm-2 col-form-label">Golongan</label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="txtgol" name="txtgol">
+                      <input type="text" class="form-control" id="txtbjenis" name="txtbjenis">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="txtlok" class="col-sm-2 col-form-label">Lokasi</label>
                     <div class="col-sm-10">
                         <input type="phone" class="form-control" id="txtlok" name="txtlok">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="txtrack" class="col-sm-2 col-form-label">No Rak</label>
+                    <div class="col-sm-10">
+                        <input type="phone" class="form-control" id="txtrack" name="txtrack">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -646,7 +631,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             <div class="modal-footer">
                 <input type="submit" class="btn btn-primary" value="Add"  id="btnaddbarang">
             </div>
-          </form>
         </div>
     </div>
 </div>
+</form>

@@ -2,7 +2,7 @@
 global $passSalt;
 require_once('../config.php' );
 require_once('../config2.php' );
-require_once('../function/secureParam.php');http://localhost/marketing/index.php
+require_once('../function/secureParam.php');
 
 switch ($_POST['fungsi']) {
 case "checkKodeMenu":
@@ -55,10 +55,21 @@ case "gettoken":
         } 
         break;
     } 
-case "checkkode":
-    $kode = $_POST['kode'];
-    $result = mysql_query("SELECT * FROM `aki_barang` WHERE kode='" . $kode . "'", $dbLink);
-    if (mysql_num_rows($result)) {
+case "getkodesupp":
+    $result = mysql_query("SELECT max(kodesupp) as kodesupp FROM `aki_supplier`", $dbLink);
+    if (mysql_num_rows($result)>0) {
+        while ( $data = mysql_fetch_assoc($result)) {
+            $id = explode("supp",$data["kodesupp"]);
+            $id = (int)$id[1]+1;
+            $id = str_pad($id, 4, '0', STR_PAD_LEFT);
+        } 
+        echo json_encode($id);
+        break;
+    } 
+case "checknkode":
+    $kode = $_POST['nkode'];
+    $result = mysql_query("SELECT * FROM `aki_barang` WHERE kode='AWD'", $dbLink);
+    if (mysql_num_rows($result)>0) {
         echo "yes";
     } else {
         echo "no";
@@ -101,7 +112,7 @@ case "editbrg":
     $result = mysql_query("SELECT * FROM `aki_barang` WHERE kode='".$kode."'", $dbLink);
     if (mysql_num_rows($result)>0) {
         while ( $data = mysql_fetch_assoc($result)) {
-            echo json_encode(array("kode"=>$data['kode'],"nama"=>$data['nama'],"satuan"=>$data['satuan'],"golongan"=>$data['golongan'],"lokasi"=>$data['lokasi'],"jenis"=>$data['jenis']));
+            echo json_encode(array("kode"=>$data['kode'],"nama"=>$data['nama'],"satuan"=>$data['satuan'],"lokasi"=>$data['lokasi'],"rack"=>$data['rack'],"jenis"=>$data['jenis']));
         } 
         break;
     } 
@@ -111,7 +122,7 @@ case "editsupp":
     $result = mysql_query("SELECT * FROM `aki_supplier` WHERE kodesupp='".$kode."'", $dbLink);
     if (mysql_num_rows($result)>0) {
         while ( $data = mysql_fetch_assoc($result)) {
-            echo json_encode(array("kodesupp"=>$data['kodesupp'],"supplier"=>$data['supplier'],"alamat"=>$data['alamat'],"kontak"=>$data['kontak'],"nomor"=>$data['nomor'],"norek"=>$data['norek'],"nrek"=>$data['nrek']));
+            echo json_encode(array("kodesupp"=>$data['kodesupp'],"supplier"=>$data['supplier'],"alamat"=>$data['alamat'],"kontak"=>$data['kontak'],"jenis"=>$data['jenis'],"nomor"=>$data['nomor'],"norek"=>$data['norek'],"nrek"=>$data['nrek']));
         } 
         break;
     } 

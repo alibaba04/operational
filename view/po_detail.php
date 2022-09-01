@@ -49,6 +49,14 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             }
         });
     });
+    function deleteRow(r) {
+        var param = r.split("_");
+        $("#txtTotal_"+param[1]).val(0);
+        document.getElementById(r).style.display = "none";
+        $("#chkAddJurnal_"+param[1]).val('');
+        $("#txtSatuan_"+param[1]).val('-');
+        total();
+    }
 
     $(function () {
         $("[data-mask]").inputmask();
@@ -73,7 +81,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             for(var i=0; i<274; ++i) {
                 var x = document.getElementById("txtkodeb_"+tcounter);
                 var option = document.createElement("option");
-                option.text = data[i].text;
+                option.innerHTML  = data[i].text;
                 option.value = data[i].val;
                 x.add(option);
             }
@@ -90,11 +98,14 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     }
     function total() {
         var jml = $("#jumAddPo").val();
-        var total = 0
+        var total = 0;
         for (var i = 0; i < jml; i++) {
-            var tharga = $("#txtTotal_"+i).val();
-            var h1 = tharga.replace(/\D+/g, "");
-            total += parseInt(h1);
+            var chkboxid = $("#chkAddJurnal_"+i);
+            if (chkboxid.val() != null) {
+                var tharga = $("#txtTotal_"+i).val();
+                var h1 = tharga.replace(/\D+/g, "");
+                total += parseInt(h1);
+            }
         }
         total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         $("#txttotalh").val(total); 
@@ -112,9 +123,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         //Kolom 1 Checkbox
         var td = document.createElement("TD");
         td.setAttribute("align","center");
-        td.setAttribute('onclick','chkadddetail('+tcounter+');');
         td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /><input  type="hidden" name="txtjbrg_'+tcounter+'" id="txtjbrg_'+tcounter+'" value="'+$("#txtjbrg").val()+'"></div>';
+        td.innerHTML+='<div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_'+tcounter+'")><i class="fa fa-fw fa-trash"></i></a><input type="hidden" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" /><input  type="hidden" name="txtjbrg_'+tcounter+'" id="txtjbrg_'+tcounter+'" value="'+$("#txtjbrg").val()+'"></div>';
         trow.appendChild(td);
 
         //Kolom 2 Barang 
@@ -309,7 +319,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <span id="msgbox"> </span>
             </div>
             <div class="box-body"style="width: 100%;overflow-x: scroll;">
-                <table class="table table-bordered table-striped table-hover" >
+                <table class="table table-bordered table-striped table-hover" id="mtable">
                     <thead>
                         <tr>
                             <th style="width: 2%"><i class='fa fa-edit'></i></th>
@@ -323,14 +333,14 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     <tbody id="kendali">
                         <?php
                         if ($_GET['mode']=='edit'){
-                            $q = "SELECT dpo.*,b.kode,b.nama FROM `aki_dpo` dpo left join aki_barang b on dpo.id_barang=b.kode WHERE md5(dpo.nopo)='".$nopo."' order by id asc";
+                            $q = "SELECT dpo.*,b.kode,b.nama FROM `aki_dpo` dpo left join aki_barang b on dpo.kode_barang=b.kode WHERE md5(dpo.nopo)='".$nopo."' order by id asc";
                             $rsdpolist = mysql_query($q, $dbLink);
                             $iPO = 0;
                             while ($dpolist = mysql_fetch_array($rsdpolist)) {
                                 $kel = '';
                                 echo "<tr id='trid_".$iPO."'>";
-                                echo '<td align="center" valign="top"><div class="form-group">
-                                <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
+                                echo '<td align="center" valign="top"><div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_' . $iPO . '")><i class="fa fa-fw fa-trash"></i></a>
+                                <input type="hidden" class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                 echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                 $q = "SELECT * FROM `aki_barang`";
                                 $listbrg = mysql_query($q, $dbLink);
@@ -346,8 +356,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"></div></td>';
                                 echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right"/></div></td>';
-                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  onfocusout="subtotal(' . $iPO . ')"class="form-control" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right"/></div></td>';
-                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtTotal_' . $iPO . '" id="txtTotal_' . $iPO . '" value="' . number_format($dpolist["subtotal"], 0, ",", "."). '"style="text-align:right"/></div></td>';
+                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  onfocusout="subtotal(' . $iPO . ')"class="form-control" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right" /></div></td>';
+                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtTotal_' . $iPO . '" id="txtTotal_' . $iPO . '" value="' . number_format($dpolist["subtotal"], 0, ",", "."). '"style="text-align:right" readonly/></div></td>';
                                 echo "</tr>";
                                 $iPO++;
                             }

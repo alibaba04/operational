@@ -114,7 +114,7 @@ class c_po
 			if (!$result) {
 				throw new Exception('Could not begin transaction');
 			}
-			$q3 = "UPDATE `aki_po` SET `id_supplier`='".$supp."',`totalharga`='".$totalh."',`tgl_po`='".$tgl."',`ket`='".$ket."',`cust`='".$cust;
+			$q3 = "UPDATE `aki_po` SET `id_supplier`='".$supp."',`totalharga`='".$totalh."',`tgl_po`='".$tgl."',`ket`='".$ket."',`acc_op`='0',`acc_fa`='0',`cust`='".$cust;
 			$q3.= "' WHERE nopo='".$nopo."'";
 			if (!mysql_query( $q3, $dbLink))
 				throw new Exception($q3.'Gagal Edit PO. ');

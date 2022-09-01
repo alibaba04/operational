@@ -4,7 +4,7 @@
 ==================================================== */
 //Memastikan file ini tidak diakses secara langsung (direct access is not allowed)
 defined('validSession') or die('Restricted access');
-$curPage = "view/beli_detail";
+$curPage = "view/in_detail";
 //Periksa hak user pada modul/menu ini
 $judulMenu = 'Order';
 $hakUser = getUserPrivilege($curPage);
@@ -33,7 +33,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         global $mailSupport;
         $pesan.="Gagal simpan data, mohon hubungi " . $mailSupport . " untuk keterangan lebih lanjut terkait masalah ini.";
     }
-    header("Location:index.php?page=view/beli_list&pesan=" . $pesan);
+    header("Location:index.php?page=view/in_list&pesan=" . $pesan);
     exit;
 }
 ?>
@@ -95,19 +95,31 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             $("#txtcqty_"+tcounter).val(data.stok);
         },"json");
     }
+    function deleteRow(r) {
+        var param = r.split("_");
+        $("#txtTotal_"+param[1]).val(0);
+        document.getElementById(r).style.display = "none";
+        $("#chkAddJurnal_"+param[1]).val('');
+        $("#txtSatuan_"+param[1]).val('-');
+        total();
+    }
     function total() {
         var jml = $("#jumaddOrder").val();
         var total = 0
         for (var i = 0; i < jml; i++) {
-            var tharga = $("#txtTotal_"+i).val();
-            var h1 = tharga.replace(/\D+/g, "");
-            total += parseInt(h1);
+            var chkboxid = $("#chkAddJurnal_"+i);
+            if (chkboxid.val() != null) {
+                var tharga = $("#txtTotal_"+i).val();
+                var h1 = tharga.replace(/\D+/g, "");
+                total += parseInt(h1);
+            }
         }
         total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         $("#txttotalh").val(total); 
         var x = document.getElementById("btnsavepo");
         x.removeAttribute("disabled"); 
     }
+
 
     function addJurnal(){    
         tcounter = $("#jumaddOrder").val();
@@ -121,7 +133,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         td.setAttribute("align","center");
         td.setAttribute('onclick','chkadddetail('+tcounter+');');
         td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /><input  type="hidden" name="txtjbrg_'+tcounter+'" id="txtjbrg_'+tcounter+'" value="'+$("#txtjbrg").val()+'"></div>';
+        td.innerHTML+='<div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_'+tcounter+'")><i class="fa fa-fw fa-trash"></i></a><input type="hidden" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /><input  type="hidden" name="txtjbrg_'+tcounter+'" id="txtjbrg_'+tcounter+'" value="'+$("#txtjbrg").val()+'"></div>';
         trow.appendChild(td);
 
         //Kolom 2 Barang 
@@ -181,11 +193,11 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
 </style>
 <section class="content-header">
     <h1>
-        Order
-        <small>Detail Order</small>
+        Barang Masuk
+        <small>Detail Barang Masuk</small>
     </h1>
 </section>
-<form action="index2.php?page=view/beli_detail" method="post" name="frmKasKeluarDetail" onSubmit="return validasiForm(this);" autocomplete="off">
+<form action="index2.php?page=view/in_detail" method="post" name="frmKasKeluarDetail" onSubmit="return validasiForm(this);" autocomplete="off">
     <section class="col-lg-6">
         <div class="box box-primary">
             <div class="box-body">
@@ -199,7 +211,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <div class="form-group" >
                     <div class="input-group">
                         <div class="input-group-addon">
-                            <label class="control-label" for="txtnopo">No Order</label>
+                            <label class="control-label" for="txtnopo">Kode</label>
                         </div>
                         <?php
                         if ($_GET["mode"] == "edit") {
@@ -303,7 +315,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">
-                            <label class="control-label" for="txttglpo">Tanggal Order</label>
+                            <label class="control-label" for="txttglpo">Tanggal </label>
                         </div>
                         <input name="txttglpo" id="txttglpo" class="form-control" value="<?php 
                         if($_GET["mode"]=='edit'){ 
@@ -367,8 +379,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             while ($dpolist = mysql_fetch_array($rsdpolist)) {
                                 $kel = '';
                                 echo "<tr id='trid_".$iPO."'>";
-                                echo '<td align="center" valign="top"><div class="form-group">
-                                <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
+                                echo '<td align="center" valign="top"><div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_' . $iPO . '")><i class="fa fa-fw fa-trash"></i></a>
+                                <input type="hidden" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                 echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                 if ($dpolist["jbarang"] == 'penunjang') {
                                     echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/></div></td>';
@@ -397,8 +409,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 while ($dpolist = mysql_fetch_array($rsdpolist)) {
                                     $kel = '';
                                     echo "<tr id='trid_".$iPO."'>";
-                                    echo '<td align="center" valign="top"><div class="form-group">
-                                    <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
+                                    echo '<td align="center" valign="top"><div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_' . $iPO . '")><i class="fa fa-fw fa-trash"></i></a>
+                                    <input type="hidden" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                     echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                     if ($dpolist["jbarang"] == 'penunjang') {
                                         echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/></div></td>';

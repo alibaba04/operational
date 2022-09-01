@@ -64,6 +64,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
             $("#txtcqty_"+tcounter).val(data.stok);
         },"json");
     }
+    function deleteRow(r) {
+        var param = r.split("_");
+        document.getElementById(r).style.display = "none";
+        $("#chkAddJurnal_"+param[1]).val('');
+        $("#txtSatuan_"+param[1]).val('-');
+    }
 
     function addJurnal(){   
         tcounter = $("#jumbkeluar").val();
@@ -77,7 +83,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         td.setAttribute("align","center");
         td.setAttribute('onclick','chkadddetail('+tcounter+');');
         td.style.verticalAlign = 'top';
-        td.innerHTML+='<div class="form-group"><input type="checkbox" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /></div>';
+        td.innerHTML+='<div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_'+tcounter+'")><i class="fa fa-fw fa-trash"></i></a><input type="hidden" class="minimal" name="chkAddJurnal_'+tcounter+'" id="chkAddJurnal_'+tcounter+'" value="1" checked /></div>';
         trow.appendChild(td);
 
         //Kolom 3 Barang 
@@ -249,8 +255,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             while ($dpolist = mysql_fetch_array($rsdpolist)) {
                                 $kel = '';
                                 echo "<tr id='trid_".$iPO."'>";
-                                echo '<td align="center" valign="top"><div class="form-group">
-                                <input type="checkbox" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
+                                echo '<td align="center" valign="top"><div class="form-group"><a class="btn btn-default btn-sm" onclick=deleteRow("trid_' . $iPO . '")><i class="fa fa-fw fa-trash"></i></a>
+                                <input type="hidden" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                 $q = "SELECT * FROM `aki_barang`";
                                 $listbrg = mysql_query($q, $dbLink);
                                 echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
