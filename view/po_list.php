@@ -316,11 +316,12 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                         }
                                         echo "</center></td>";
                                     }
+                                    echo "<td>";
                                     if ($hakUser == 90 && $query_data["acc_fa"]!=1 && $query_data["acc_op"]!=1) {
-                                        echo "<td><a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
+                                        echo "<a class='btn btn-default btn-sm' href='".$_SERVER['PHP_SELF']."?page=view/po_detail&mode=edit&nopo=" . md5($query_data["nopo"])."'><i class='fa fa-fw fa-pencil color-black'></i></a>";
                                         echo "<a class='btn btn-default btn-sm' onclick=\"if(confirm('Apakah anda yakin akan menghapus data PO ?')){location.href='index2.php?page=" . $curPage . "&txtMode=Delete&nopo=" . md5($query_data["nopo"]) . "'}\" style='cursor:pointer;'><i class='fa fa-fw fa-trash'></i></a>";
                                     }
-                                    echo "</tr>";
+                                    echo "</td></tr>";
                                     $rowCounter++;
                                 }
                                 if (!$rs->getNumPages()) {
