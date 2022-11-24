@@ -214,7 +214,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     if ($query_data["pk_makara"]!='0000-00-00' && $query_data["ekspedisi_out"]=='0000-00-00') {
                                         echo "style='background-color: #8ea9db;'";
                                     }
-                                    echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/po_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>";
+                                    echo "onclick=location.href='" . $_SERVER['PHP_SELF'] . "?page=view/proyek_detail&mode=edit&nospk=" . md5($query_data["nospk"])."'>";
                                     echo "<td>" . ($query_data["noproyek"]) . "</td>";
                                     echo "<td>" . $query_data["masjid"] . "</td>";
                                     echo "<td>" . $query_data["lokasi"] . "</td>";

@@ -55,7 +55,7 @@ class c_order
 			$qq.= "('".$nobeli."','".$nopo."','".$tgl."','".$supp."','".$ket."','".$totalh."','".$cust."','".$pembuat."');";
 			if (!mysql_query( $qq, $dbLink))
 				throw new Exception($qq.'Gagal Add Order.');
-			$qu= "UPDATE `aki_po` SET `r_order`=1 WHERE nopo='".$nopo."'";
+			$qu= "UPDATE `aki_po` SET `r_order`=`r_order`+1 WHERE nopo='".$nopo."'";
 			if (!mysql_query( $qu, $dbLink))
 				throw new Exception($qu.'Gagal Add Order.');
 			$jumData = $params["jumaddOrder"];
@@ -67,12 +67,17 @@ class c_order
                     $harga = secureParam($params["txtHarga_" . $j], $dbLink);
                     $total = secureParam($params["txtTotal_" . $j], $dbLink);
 					$jbarang = secureParam($params["txtjbrg_" . $j],$dbLink);
+					$qtym = secureParam($params["txtqtym_" . $j],$dbLink);
                     $h = preg_replace("/\D/", "", $harga);
                     $t = preg_replace("/\D/", "", $total);
                     $q2 = "INSERT INTO `aki_dbeli`(`nobeli`, `jbarang`,`kode_barang`, `qty`, `satuan`, `harga`, `subtotal`) ";
-					$q2.= "VALUES ('".$nobeli."','".$jbarang."','".$idb."','".$qty."', '".$satuan."', '".$h."', '".$t."');";
+					$q2.= "VALUES ('".$nobeli."','".$jbarang."','".$idb."','".$qtym."', '".$satuan."', '".$h."', '".$t."');";
 					if (!mysql_query( $q2, $dbLink))
 						throw new Exception('dbeli.'.mysql_error());
+
+					$q3 = "UPDATE `aki_dpo` SET `qtymasuk`=`qtymasuk`+".$qtym." WHERE nopo='".$nopo."'";
+					if (!mysql_query( $q3, $dbLink))
+						throw new Exception('dpo.'.mysql_error());
 					@mysql_query("COMMIT", $dbLink);
 					$this->strResults="Sukses Add dbeli";
 				}
@@ -102,6 +107,7 @@ class c_order
 		$tgl = date("Y-m-d");
 		$nobeli = secureParam($params["txtnobeli"],$dbLink);
 		$nobeli = secureParam($params["txtnobeli"],$dbLink);
+		$nopo = secureParam($params["txtnopo"],$dbLink);
 		$totalh = secureParam($params["txttotalh"],$dbLink);
 		$totalh = preg_replace("/\D/", "", $totalh);
 		$supp = secureParam($params["idsupp"],$dbLink);
@@ -138,10 +144,18 @@ class c_order
                     $total = secureParam($params["txtTotal_" . $j], $dbLink);
                     $h = preg_replace("/\D/", "", $harga);
                     $t = preg_replace("/\D/", "", $total);
+                    $qtym = secureParam($params["txtqtym_" . $j],$dbLink);
+                    $qtypakai = secureParam($params["txtqtypakai_" . $j],$dbLink);
+                    $q3 = "UPDATE `aki_dpo` SET `qtymasuk`='0' WHERE nopo='".$nopo."'";
+					if (!mysql_query( $q3, $dbLink))
+						throw new Exception('dpo.'.mysql_error());
                     $q2 = "INSERT INTO `aki_dbeli`(`nobeli`, `jbarang`,`kode_barang`, `qty`, `satuan`, `harga`, `subtotal`) ";
-					$q2.= "VALUES ('".$nobeli."','".$jbarang."','".$idb."','".$qty."', '".$satuan."', '".$h."', '".$t."');";
+					$q2.= "VALUES ('".$nobeli."','".$jbarang."','".$idb."','".$qtym."', '".$satuan."', '".$h."', '".$t."');";
 					if (!mysql_query( $q2, $dbLink))
 						throw new Exception('dbeli.'.mysql_error());
+					$q3 = "UPDATE `aki_dpo` SET `qtymasuk`=".($qtypakai+$qtym)." WHERE nopo='".$nopo."'";
+					if (!mysql_query( $q3, $dbLink))
+						throw new Exception('dpo.'.mysql_error());
 					@mysql_query("COMMIT", $dbLink);
 					$this->strResults="Sukses Edit dbeli";
 				}

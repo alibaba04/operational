@@ -87,6 +87,15 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         $("#txtTotal_"+$tcounter).val(tharga); 
         total();
     }
+    function cekval($tcounter) {
+        var qty = $("#txtqty_"+$tcounter).val(); 
+        var qtym = $("#txtqtym_"+$tcounter).val();
+        var sisa = qty-qtym;
+        if (sisa <0) {
+            alert('Barang masuk melebihi Pemesanan');
+            $("#txtqtym_"+$tcounter).onfocus();
+        }
+    }
     function selectbrg(tcounter) {
         var x = $("#txtkodeb_"+tcounter).val();
         $.post("function/ajax_function.php",{ fungsi: "getsatuan",kode:x },function(data)
@@ -202,6 +211,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
         <div class="box box-primary">
             <div class="box-body">
                 <?php 
+                    $nomerpo = ''; 
                     if ($_GET["mode"] == "edit") {
                         echo "<input type='hidden' name='txtMode' value='Edit'>";
                     }else{
@@ -272,7 +282,8 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                         <div class="input-group-addon">
                             <label class="control-label" for="txtnopo">No Po</label>
                         </div>
-                        <input name="txtnopo" id="txtnopo" maxlength="30" class="form-control" readonly value="<?php if($_GET["mode"]=='edit'){ echo $dataOrder['nopo']; }else{echo $dataPo["nopo"];}?>">
+                        <input name="txtnopo" id="txtnopo" maxlength="30" class="form-control" readonly value="<?php if($_GET["mode"]=='edit'){ echo $dataOrder['nopo']; $nomerpo=$dataOrder['nopo'];}else{echo $dataPo["nopo"];}
+                        ?>">
                     </div>
                 </div>
                 <div class="form-group">
@@ -280,7 +291,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                         <div class="input-group-addon">
                             <label class="control-label" for="txtjbrg">Barang</label>
                         </div>
-                        <select class="form-control" name="txtjbrg" id="txtjbrg">
+                        <select class="form-control" name="txtjbrg" id="txtjbrg" readonly>
                             <option value="persediaan">Persedian Produksi</option>
                             <option value="penunjang">Penunjang</option>
                         </select>
@@ -288,7 +299,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                 </div>
                 <div class="form-group">
                     <div class="" style="padding-bottom: 10px;padding-right: 0px;padding-left: 5px;">
-                        <select class="form-control select2" name="idsupp" id="idsupp">
+                        <select class="form-control " name="idsupp" id="idsupp" readonly>
                             <?php
                             $q = 'SELECT * FROM `aki_supplier`';
                             $sql_supp = mysql_query($q,$dbLink);
@@ -326,7 +337,10 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             }else{
                                 echo date("d-m-Y", strtotime($dataPo['tgl_po']));
                             }
-                        }?>">
+                        }
+                        echo'"';
+                            echo 'disabled>';
+                        ?>
                     </div>
                 </div>
                 <div class="form-group">
@@ -334,7 +348,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                         <div class="input-group-addon">
                             <label class="control-label" for="txtcust">Cust</label>
                         </div>
-                        <input name="txtcust" id="txtcust" class="form-control" value="<?php if($_GET["mode"]=='edit'){ echo $dataOrder["cust"]; }else{echo $dataPo["cust"];}?>" required>
+                        <input name="txtcust" id="txtcust" class="form-control" value="<?php if($_GET["mode"]=='edit'){ echo $dataOrder["cust"]; }else{echo $dataPo["cust"];}?>" readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -366,14 +380,13 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                             <th style="width: ">Barang</th>
                             <th style="width: 8%">Qty</th>
                             <th style="width: 10%">Satuan</th>
-                            <th style="width: 15%">Harga (Rp)</th>
-                            <th style="width: 15%">Sub Total (Rp)</th>
+                            <th style="width: 15%">Qty Masuk</th>
                         </tr>
                     </thead>
                     <tbody id="kendali">
                         <?php
                         if ($_GET['mode']=='edit'){
-                            $q = "SELECT db.*,ba.kode,ba.nama FROM aki_dbeli db left join aki_barang ba on db.kode_barang=ba.kode WHERE md5(db.nobeli)='".$nobeli."' order by db.id asc";
+                            $q = "SELECT db.*,ba.kode,ba.nama ,dp.qty as qtypo,(SELECT qty FROM aki_dbeli db left join aki_beli b on b.nobeli=db.nobeli WHERE md5(b.nobeli)!='".$nobeli."' and b.nopo='".$nomerpo."' ) as qtypakai FROM aki_dbeli db left join aki_barang ba on db.kode_barang=ba.kode left join aki_beli b on b.nobeli=db.nobeli left join aki_dpo dp on b.nopo=dp.nopo WHERE md5(db.nobeli)='".$nobeli."'";
                             $rsdpolist = mysql_query($q, $dbLink);
                             $iPO = 0;
                             while ($dpolist = mysql_fetch_array($rsdpolist)) {
@@ -383,21 +396,19 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                 <input type="hidden" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                 echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                 if ($dpolist["jbarang"] == 'penunjang') {
-                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/></div></td>';
+                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left" readonly/></div></td>';
                                 }else{
                                     $q = "SELECT * FROM `aki_barang`";
                                     $listbrg = mysql_query($q, $dbLink);
-                                    echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
+                                    echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control " name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
                                     <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
-                                    while ($dbrg = mysql_fetch_array($listbrg)) {
-                                        echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
-                                    }
                                 }
-                                
-                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"></div></td>';
-                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right"/></div></td>';
-                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  onfocusout="subtotal(' . $iPO . ')"class="form-control" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right"/></div></td>';
-                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtTotal_' . $iPO . '" id="txtTotal_' . $iPO . '" value="' . number_format($dpolist["subtotal"], 0, ",", "."). '"style="text-align:right"/></div></td>';
+                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . ($dpolist["qtypo"]-$dpolist["qtypakai"]). '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')" readonly></div></td>';
+                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right" readonly/></div></td>';
+                                echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtqtym_' . $iPO . '" id="txtqtym_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right" onfocusout="cekval(' . $iPO . ')"/>';
+                                echo '<input type="hidden"  name="txtqtypakai_' . $iPO . '" id="txtqtypakai_' . $iPO . '" value="' . $dpolist["qtypakai"]. '/>';
+                                echo '<input type="hidden"  name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right"/>';
+                                echo '<input type="hidden" name="txtTotal_' . $iPO . '" id="txtTotal_' . $iPO . '" value="' . number_format($dpolist["subtotal"], 0, ",", "."). '"style="text-align:right"/></div></td>';
                                 echo "</tr>";
                                 $iPO++;
                             }
@@ -413,20 +424,19 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                                     <input type="hidden" checked class="minimal"  name="chkAddJurnal_' . $iPO . '" id="chkAddJurnal_' . $iPO . '" value="1"/></div></td>';
                                     echo '<input  type="hidden" name="txtjbrg_'. $iPO .'" id="txtjbrg_'. $iPO .'" value="'.$dpolist["jbarang"].'">';
                                     if ($dpolist["jbarang"] == 'penunjang') {
-                                        echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/></div></td>';
+                                        echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" value="' . $dpolist["kode_barang"]. '"style="text-align:left"/ readonly></div></td>';
                                     }else{
-                                        $q = "SELECT * FROM `aki_barang`";
-                                        $listbrg = mysql_query($q, $dbLink);
-                                        echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control select2" name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '">
+                                        echo '<td align="" valign="top" width=><div class="form-group"><select class="form-control " name="txtkodeb_' . $iPO . '" id="txtkodeb_' . $iPO . '" readonly>
                                         <option value="'.$dpolist['kode'].'">'.$dpolist['kode'].' - '.$dpolist['nama'].'</option>';
-                                        while ($dbrg = mysql_fetch_array($listbrg)) {
-                                            echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
-                                        }
                                     }
-                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . $dpolist["qty"]. '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"></div></td>';
-                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right"/></div></td>';
-                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  onfocusout="subtotal(' . $iPO . ')"class="form-control" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"style="text-align:right"/></div></td>';
-                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtTotal_' . $iPO . '" id="txtTotal_' . $iPO . '" value="' . number_format($dpolist["subtotal"], 0, ",", "."). '"style="text-align:right"/></div></td>';
+                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" onkeydown="return numbersonly(this, event);"  class="form-control" name="txtqty_' . $iPO . '" id="txtqty_' . $iPO . '" value="' . ($dpolist["qty"]-$dpolist["qtymasuk"]). '"style="text-align:right"/ onfocusout="subtotal(' . $iPO . ')"readonly></div></td>';
+                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="text" class="form-control" name="txtSatuan_' . $iPO . '" id="txtSatuan_' . $iPO . '" value="' . $dpolist["satuan"]. '"style="text-align:right" readonly/></div></td>';
+                                    
+                                    echo '<td align="center" valign="top" width=><div class="form-group"><input type="number" class="form-control" name="txtqtym_' . $iPO . '" id="txtqtym_' . $iPO . '" onfocusout="cekval(' . $iPO . ')" value="0"style="text-align:right"/>';
+                                    echo '<input type="hidden" name="txtHarga_' . $iPO . '" id="txtHarga_' . $iPO . '" value="' . number_format($dpolist["harga"], 0, ",", "."). '"/>';
+                                    echo '<input type="hidden" name="txtTotal_' . $iPO . '" id="txtTotal_' . $iPO . '" value="' . number_format($dpolist["subtotal"], 0, ",", "."). '"/>';
+                                    echo '</div></td>';
+                                    
                                     echo "</tr>";
                                     $iPO++;
                                 }
@@ -436,9 +446,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     </tbody>
                     <tfoot>
                         <tr>
-                          <td colspan="4"></td>
-                          <td>Total :</td>
-                          <td><input type="text" name="txttotalh" id="txttotalh" readonly="" value="<?php if($_GET['mode']=='edit'){echo number_format($dataOrder['totalharga'], 0, ",", ".");}else{echo number_format($dataPo['totalharga'], 0, ",", ".");} ?>"></td>
+                          <td colspan="5"></td>
                         </tr>
                         <tr style="background-color: white;">
                         
@@ -447,7 +455,7 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     </tfoot>
                 </table>
                 <input type="hidden" value="<?php echo $iPO;?>" id="jumaddOrder" name="jumaddOrder"/>
-                <center><button type="button" class="btn btn-primary" onclick="javascript:addJurnal()">Add Detail</button></center>
+                <!-- <center><button type="button" class="btn btn-primary" onclick="javascript:addJurnal()">Add Detail</button></center> -->
             </div>
         </div>
     </section>   

@@ -26,7 +26,7 @@
     $pdf->Cell(70,6,'Barang',1,0,'C',0);
     $pdf->Cell(20,6,'Qty',1,1,'C',0);
     //database
-    $q2 = "SELECT b.kode,b.nama,cust,supp.supplier,bk.nobeli as no,qty,tgl_beli as tgl,'out' as ket FROM `aki_barang` b RIGHT join aki_dbeli dbk on b.kode=dbk.kode_barang RIGHT join aki_beli bk on bk.nobeli=dbk.nobeli left join aki_supplier supp on bk.id_supplier=supp.kodesupp where tgl_beli BETWEEN '".$tgl1."' and '".$tgl2."'";
+    $q2 = "SELECT b.kode,b.nama,cust,supp.supplier,bk.nobeli as no,qty,tgl_beli as tgl,'IN' as ket FROM `aki_barang` b RIGHT join aki_dbeli dbk on b.kode=dbk.kode_barang RIGHT join aki_beli bk on bk.nobeli=dbk.nobeli left join aki_supplier supp on bk.id_supplier=supp.kodesupp where tgl_beli BETWEEN '".$tgl1."' and '".$tgl2."'";
     $rs2 = mysql_query($q2, $dbLink);
     $total=0;
     while ($query_data = mysql_fetch_array($rs2)) {

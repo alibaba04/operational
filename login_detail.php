@@ -68,7 +68,7 @@ if (isset($_POST[txtUserID])) {
             </p>
             <form id="loginform" name="loginform" action="index2.php?page=login_detail" method="post">
                 <div class="form-group has-feedback">
-                    <input type="text" name="txtUserID" id="txtUserID" class="form-control" placeholder="Username" style="border-radius: 4px;">
+                    <input type="text" name="txtUserID" id="txtUserID" class="form-control" placeholder="Username" style="border-radius: 4px;" pattern='[A-Za-z]*'>
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">

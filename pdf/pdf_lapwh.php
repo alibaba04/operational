@@ -14,6 +14,7 @@
     
     $tgl1 = date('Y-m-d', strtotime($tgl[0]));
     $tgl2 = date('Y-m-d', strtotime($tgl[1]));
+    $brg = $_GET['brg'];
     $pdf->Cell(0, 5, "Laporan Transaksi : ".$tgl[0].' sampai '.$tgl[1], 0, 1, 'C');
     
     //ISI
@@ -26,8 +27,14 @@
     $pdf->Cell(25,6,'Proyek',1,0,'C',0);
     $pdf->Cell(70,6,'Barang',1,0,'C',0);
     $pdf->Cell(20,6,'Qty',1,1,'C',0);
+    $filter = '';
+    if ($brg != '?') {
+        $filter = "BETWEEN '".$tgl1."' and '".$tgl2."' and kode='".$brg."'";
+    }else{
+        $filter = "BETWEEN '".$tgl1."' and '".$tgl2."'";
+    }
     //database
-    $q2 = "SELECT b.kode,b.nama,cust,'-' as kodeproyek,bb.nobeli as no,qty,tgl_beli as tgl,'in' as ket FROM `aki_barang` b RIGHT join aki_dbeli db on b.kode=db.kode_barang RIGHT join aki_beli bb on bb.nobeli=db.nobeli where tgl_beli BETWEEN '".$tgl1."' and '".$tgl2."' UNION ALL SELECT b.kode,b.nama,cust,kodeproyek,bk.nobkeluar as no,qty,tgl_bkeluar as tgl,'out' as ket FROM `aki_barang` b RIGHT join aki_dbkeluar dbk on b.kode=dbk.kode_barang RIGHT join aki_bkeluar bk on bk.nobkeluar=dbk.nobkeluar where tgl_bkeluar BETWEEN '".$tgl1."' and '".$tgl2."' UNION ALL SELECT b.kode,b.nama,'-' as cust,'-' as kodeproyek,bs.nobso as no,qty,tgl_bso as tgl,'so' as ket FROM `aki_barang` b RIGHT join aki_dbso dbs on b.kode=dbs.kode_barang RIGHT join aki_bso bs on bs.nobso=dbs.nobso where tgl_bso BETWEEN '".$tgl1."' and '".$tgl2."' UNION ALL SELECT b.kode,b.nama,'-' as cust,'-' as kodeproyek,br.nobretur as no,qty,tgl_bretur as tgl,'re' as ket FROM `aki_barang` b RIGHT join aki_dbretur dbr on b.kode=dbr.kode_barang RIGHT join aki_bretur br on br.nobretur=dbr.nobretur where tgl_bretur BETWEEN '".$tgl1."' and '".$tgl2."'";
+    $q2 = "SELECT b.kode,b.nama,cust,'-' as kodeproyek,bb.nobeli as no,qty,tgl_beli as tgl,'in' as ket FROM `aki_barang` b RIGHT join aki_dbeli db on b.kode=db.kode_barang RIGHT join aki_beli bb on bb.nobeli=db.nobeli where tgl_beli ".$filter." UNION ALL SELECT b.kode,b.nama,cust,kodeproyek,bk.nobkeluar as no,qty,tgl_bkeluar as tgl,'out' as ket FROM `aki_barang` b RIGHT join aki_dbkeluar dbk on b.kode=dbk.kode_barang RIGHT join aki_bkeluar bk on bk.nobkeluar=dbk.nobkeluar where tgl_bkeluar ".$filter." UNION ALL SELECT b.kode,b.nama,'-' as cust,'-' as kodeproyek,bs.nobso as no,qty,tgl_bso as tgl,'so' as ket FROM `aki_barang` b RIGHT join aki_dbso dbs on b.kode=dbs.kode_barang RIGHT join aki_bso bs on bs.nobso=dbs.nobso where tgl_bso ".$filter." UNION ALL SELECT b.kode,b.nama,'-' as cust,'-' as kodeproyek,br.nobretur as no,qty,tgl_bretur as tgl,'re' as ket FROM `aki_barang` b RIGHT join aki_dbretur dbr on b.kode=dbr.kode_barang RIGHT join aki_bretur br on br.nobretur=dbr.nobretur where tgl_bretur ".$filter;
     $rs2 = mysql_query($q2, $dbLink);
     $total=0;
     while ($query_data = mysql_fetch_array($rs2)) {

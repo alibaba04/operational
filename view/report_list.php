@@ -79,15 +79,15 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
     }
     function topdf() {
         if ($("#txtJenis").val() == 1) {
-            location.href='pdf/pdf_lapwh.php?&tgl='+$("#tgl").val();
+            location.href='pdf/pdf_lapwh.php?&brg='+$("#txtbrg").val()+'&tgl='+$("#tgl").val();
         }else if($("#txtJenis").val() == 2){
-            location.href='pdf/pdf_lapin.php?&tgl='+$("#tgl").val();
+            location.href='pdf/pdf_lapin.php?&brg='+$("#txtbrg").val()+'&tgl='+$("#tgl").val();
         }else if($("#txtJenis").val() == 3){
-            location.href='pdf/pdf_lapout.php?&tgl='+$("#tgl").val();
+            location.href='pdf/pdf_lapout.php?&brg='+$("#txtbrg").val()+'&tgl='+$("#tgl").val();
         }else if($("#txtJenis").val() == 4){
-            location.href='pdf/pdf_lapretur.php?&tgl='+$("#tgl").val();
+            location.href='pdf/pdf_lapretur.php?&brg='+$("#txtbrg").val()+'&tgl='+$("#tgl").val();
         }else if($("#txtJenis").val() == 5){
-            location.href='pdf/pdf_lapso.php?&tgl='+$("#tgl").val();
+            location.href='pdf/pdf_lapso.php?&brg='+$("#txtbrg").val()+'&tgl='+$("#tgl").val();
         }   
     }
 </script>
@@ -108,13 +108,25 @@ if (substr($_SERVER['PHP_SELF'], -10, 10) == "index2.php" && $hakUser == 90) {
                     <option value="4">Laporan Barang Retur</option>
                     <option value="5">Laporan Stok Opname</option>
                 </select><br>
-                    <input type="text" class="form-control" name="tgl" id="tgl" 
-                    <?php
-                    if (isset($_GET["tanggal"])) {
-                        echo("value='" . $_GET["tgl"] . "'");
-                    }
-                    ?>
-                    onKeyPress="return handleEnter(this, event)" placeholder="Range Date">
+                <div class="form-group">
+                    <select class="form-control select2" name="txtbrg" id="txtbrg" style="width: 100%">
+                        <option value="">Semua Barang</option>;
+                        <?php 
+                            $q = "SELECT * FROM `aki_barang`";
+                            $listbrg = mysql_query($q, $dbLink);
+                            while ($dbrg = mysql_fetch_array($listbrg)) {
+                                echo '<option value="'.$dbrg['kode'].'">'.$dbrg['kode'].' - '.$dbrg['nama'].'</option>';
+                            }
+                        ?>
+                    </select>
+                </div>
+                <input type="text" class="form-control" name="tgl" id="tgl" 
+                <?php
+                if (isset($_GET["tanggal"])) {
+                    echo("value='" . $_GET["tgl"] . "'");
+                }
+                ?>
+                onKeyPress="return handleEnter(this, event)" placeholder="Range Date">
             </div>
             <div class="modal-footer">
             <?php

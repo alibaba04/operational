@@ -269,74 +269,58 @@ $datakcolor1 = '';
           </div>
           <div class="tab-pane" id="spec">
             <?php
-            $q4="SELECT dkk.*,col.* FROM aki_dkk dkk left join aki_kkcolor col on dkk.noKK=col.noKK and dkk.nomer=col.nomer WHERE 1=1 and MD5(dkk.noKk)='".$noKk."' group by dkk.nomer order by dkk.nomer asc";
-            $rsTemp3 = mysql_query($q4, $dbLink2);
-            while ($detail = mysql_fetch_array($rsTemp3)) {
-              ?>
-              <ul class="timeline timeline-inverse" style="margin: 1%;">
-                <li style="margin-bottom: 0;">
-                  <i class="fa fa-dot-circle-o bg-aqua"></i>
-                  <div class="timeline-item">
-                    <span class="time"><i class="fa fa-clock-o"></i> </span>
-                    <h5 class="timeline-header">Proyek <?php  echo $detail["nomer"]+1; ?> </h5>
-                    <div class="timeline-body"><h4><b>Kubah <?php echo $detail["bahan"].', '.strtoupper($detail["model"]); ?>
-                  </b></h4></div>
-                  <div class="timeline-body"><h4>Diameter <b><?php  echo $detail["d"]; ?> meter,</b> Tinggi <b><?php  echo $detail["t"]; ?> meter,</b> Luas <b><?php  echo $detail["luas"]; ?> meter<sup>2</sup></b></h4>
-                  </div>
-                  <div class="timeline-body" style="margin-left: 1.5%;">
-                    <?php  
-                    echo chr(12).'  Rangka utama pipa galvanis '.$rangka.'<br>'.$rangkad.chr(12).'  Hollow 1,5 x 3,5 cm tebal 0,7 mm<br>';
-                    echo $bahan.$Finishing; 
-                    echo $plafon; 
-                    echo $aksesoris; ?></div>
-                    <div class="timeline-body"><h4><b><?php  echo 'Rp '.number_format($detail['ntransport']).' ('.$detail['ktransport'].')'; ?></h4></b>
-                    </div>
-                    <div class="timeline-body"><table class="table">
-                      <tr>
-                        <th><center>Warna</center></th>
-                        <th><center>Kode</center></th>
-                      </tr>
-                      <?php 
-
-                      if ($detail['color1']!='-') {
-                        $datacolor1 = $detail['color1'];
-                        $datakcolor1 = $detail['kcolor1'];
-                        echo '<tr><td style="text-align: center;">'.$detail['color1'];
-                        echo '<td style="text-align: center;">'.$detail['kcolor1'].'</tr>';
-                      }else{
-                        echo '<tr><td style="text-align: center;">-';
-                        echo '<td style="text-align: center;">-</tr>';
-                      }
-                      if ($detail['color2']!='-') {
-                        echo '<tr><td style="text-align: center;">'.$detail['color2'];
-                        echo '<td style="text-align: center;">'.$detail['kcolor2'].'</tr>';
-                      }
-                      if ($detail['color3']!='-') {
-                        echo '<tr><td style="text-align: center;">'.$detail['color3'];
-                        echo '<td style="text-align: center;">'.$detail['kcolor3'].'</tr>';
-                      }
-                      if ($detail['color4']!='-') {
-                        echo '<tr><td style="text-align: center;">'.$detail['color4'];
-                        echo '<td style="text-align: center;">'.$detail['kcolor4'].'</tr>';
-                      }
-                      if ($detail['color5']!='-') {
-                        echo '<tr><td style="text-align: center;">'.$detail['color5'];
-                        echo '<td style="text-align: center;">'.$detail['kcolor5'].'</tr>';
-                      }
-
-                      echo '<input type="hidden" name="color1" id="color1" class="form-control" value="'.$datacolor1.'">';
-                      echo '<input type="hidden" name="kcolor1" id="kcolor1" class="form-control" value="'.$datakcolor1.'">';
-                      ?></table>
-                    </div>
-                    <div class="timeline-body"><h4>Masa Produksi <b><?php  echo $mproduksi; ?> hari,</b> Masa Pemasangan <b><?php  echo $mpemasangan; ?> hari</b></h4></div>
-                  </div>
-                </li>
-                <li>
-                  <i class="fa fa-clock-o bg-gray"></i>
-                </li>
-              </ul>
-              <?php
-            }
+                $q4="SELECT dkk.* FROM aki_dkk dkk WHERE 1=1 and MD5(dkk.noKk)='".$noKk."' group by dkk.nomer order by dkk.nomer asc";
+                $rsTemp3 = mysql_query($q4, $dbLink2);
+                while ($detail = mysql_fetch_array($rsTemp3)) {
+                  ?>
+                  <ul class="timeline timeline-inverse" style="margin: 1%;">
+                    <li style="margin-bottom: 0;">
+                      <i class="fa fa-dot-circle-o bg-aqua"></i>
+                      <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> </span>
+                        <h5 class="timeline-header">Proyek <?php  echo $detail["nomer"]+1; ?> </h5>
+                        <div class="timeline-body"><h4><b>Kubah <?php echo $detail["bahan"].', '.strtoupper($detail["model"]); ?>
+                        </b></h4></div>
+                        <div class="timeline-body"><h4>Diameter <b><?php  echo $detail["d"]; ?> meter,</b> Tinggi <b><?php  echo $detail["t"]; ?> meter,</b> Luas <b><?php  echo $detail["luas"]; ?> meter<sup>2</sup></b></h4>
+                        </div>
+                        <div class="timeline-body" style="margin-left: 1.5%;">
+                          <?php  
+                          $qq2 = "SELECT * FROM aki_kkrangka WHERE `aktif`=1 and MD5(noKK)='".$noKk."' and nomer='".$detail["nomer"]."' order by idRangka asc";
+                          $rsq2 = mysql_query($qq2, $dbLink2);
+                          while (  $hasildr1 = mysql_fetch_array($rsq2)) {
+                            echo chr(12).'  '.$hasildr1['rangka'].'<br>';
+                          }
+                          ?></div>
+                        <div class="timeline-body"><h4><b><?php  echo 'Rp '.number_format($detail['ntransport']).' ('.$detail['ktransport'].')'; ?></h4></b>
+                        </div>
+                        <div class="timeline-body"><table class="table">
+                          <tr>
+                            <th><center>Warna</center></th>
+                            <th><center>Kode</center></th>
+                          </tr>
+                          <?php 
+                            $qq3 = "SELECT * FROM `aki_kkcolor` WHERE MD5(noKK)='".$noKk."'";
+                            $rsq3 = mysql_query($qq3, $dbLink2);
+                            while (  $hasilcol = mysql_fetch_array($rsq3)) {
+                              echo '<tr><td style="text-align: center;">'.$hasilcol['color'];
+                              echo '<td style="text-align: center;">'.$hasilcol['kcolor'].'</tr>';
+                              $datacolor1 =$hasilcol['color'];
+                              $datakcolor1 = $hasilcol['kcolor'];
+                            }
+                          
+                          echo '<input type="hidden" name="color1" id="color1" value="'.$datacolor1.'">';
+                          echo '<input type="hidden" name="kcolor1" id="kcolor1" value="'.$datakcolor1.'">';
+                          ?></table>
+                        </div>
+                        <div class="timeline-body"><h4>Masa Produksi <b><?php  echo $mproduksi; ?> hari,</b> Masa Pemasangan <b><?php  echo $mpemasangan; ?> hari</b></h4></div>
+                      </div>
+                    </li>
+                    <li>
+                      <i class="fa fa-clock-o bg-gray"></i>
+                    </li>
+                  </ul>
+                  <?php
+                }
             ?>
           </div>
         </div>
